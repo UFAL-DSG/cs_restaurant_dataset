@@ -120,8 +120,8 @@ def process_sent(toks, abstrs):
 
 
 def text_key(toks):
-    """Key for sentence comparison: ignoring casing and punctuation."""
-    return ' '.join([tok.lower() for tok in toks if re.match('^[a-z-]+$', tok, re.IGNORECASE)])
+    """Key for sentence comparison (punctuation/casing differences are taken into account)."""
+    return ' '.join(toks)
 
 
 def main():
