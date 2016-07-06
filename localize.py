@@ -44,7 +44,8 @@ class DAI(recordclass('DAI', ['dat', 'slot', 'value'])):
         m = re.match('^([a-z_?]+)\(([^=]*)(?:=(.*))?\)$', string)
         dat = m.group(1)
         slot = m.group(2)
-        value = re.sub(r'^[\'"]', '', m.group(2))
+        value = m.group(3) if m.group(3) is not None else ''
+        value = re.sub(r'^[\'"]', '', value)
         value = re.sub(r'[\'"]#?$', '', value)
         value = re.sub(r'"#? and "', ' and ', value)
         value = re.sub(r'_', ' ', value)
@@ -130,7 +131,7 @@ LOCALIZE = {
 }
 
 
-def process_sent(toks, abstrs):
+def process_sent(toks, abstrs, da):
     for abstr in abstrs:
         if abstr.start >= len(toks) or not toks[abstr.start].startswith('X-'):
             continue
@@ -152,7 +153,10 @@ def process_sent(toks, abstrs):
             toks[abstr.start] = val
         else:
             toks[abstr.start] = abstr.value
-    return toks
+
+        dai = next(dai_ for dai_ in da if dai_.slot == abstr.slot)
+        dai.value = toks[abstr.start]
+    return toks, da
 
 
 def text_key(toks):
@@ -185,7 +189,8 @@ def main():
         if key in data_keys:  # skip (delex) duplicates
             continue
         data_keys.add(key)
-        data.append(process_sent(text, abstr))
+        text, da = process_sent(text, abstr, da)
+        data.append(text)
         das_out.append(da)  # TODO DAs should be processed somehow
 
     write_toks(args.out_file, data)
