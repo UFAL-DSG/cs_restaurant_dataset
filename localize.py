@@ -31,6 +31,26 @@ class Abst(recordclass('Abst', ['slot', 'value', 'start', 'end'])):
         return Abst(slot, value, start, end)
 
 
+class DAI(recordclass('DAI', ['dat', 'slot', 'value'])):
+    """Simple representation of a single dialogue act item."""
+
+    def __unicode__(self):
+        quote = '"' if ' ' in self.value or ':' in self.value else ''
+        return (self.dat + '(' + (self.slot or '') +
+                ('=' + quote + self.value + quote if self.value else '') + ')')
+
+    @staticmethod
+    def parse(string):
+        m = re.match('^([a-z_?]+)\(([^=]*)(?:=(.*))?\)$', string)
+        dat = m.group(1)
+        slot = m.group(2)
+        value = re.sub(r'^[\'"]', '', m.group(2))
+        value = re.sub(r'[\'"]#?$', '', value)
+        value = re.sub(r'"#? and "', ' and ', value)
+        value = re.sub(r'_', ' ', value)
+        return DAI(dat, slot, value)
+
+
 def load_toks(file_name):
     data = []
     with codecs.open(file_name, 'r', encoding='UTF-8') as fh:
@@ -46,6 +66,15 @@ def load_abstrs(file_name):
         for line in fh:
             line = filter(bool, line.strip().split('\t'))
             data.append([Abst.parse(part) for part in line])
+    return data
+
+
+def load_dais(file_name):
+    data = []
+    with codecs.open(file_name, 'r', encoding='UTF-8') as fh:
+        for line in fh:
+            line = line.strip().split('&')
+            data.append([DAI.parse(part) for part in line])
     return data
 
 
@@ -66,6 +95,13 @@ def write_toks(file_name, data):
             sent = re.sub(r' ([?.,\'])', r'\1', sent)
             # print the output
             print >> fh, sent
+
+
+def write_das(file_name, das):
+    with codecs.open(file_name, 'w', encoding='UTF-8') as fh:
+        for da in das:
+            da_str = '&'.join(unicode(dai) for dai in da)
+            print >> fh, da_str
 
 
 LOCALIZE = {
@@ -131,23 +167,29 @@ def main():
 
     ap.add_argument('text_file', type=str, help='Input delexicalized text file')
     ap.add_argument('abstr_file', type=str, help='Lexicalization instruction file')
+    ap.add_argument('da_file', type=str, help='Input DA file')
     ap.add_argument('out_file', type=str, help='Output file')
+    ap.add_argument('out_das_file', type=str, help='Output DA file')
 
     args = ap.parse_args()
 
     texts = load_toks(args.text_file)
     abstrs = load_abstrs(args.abstr_file)
+    das = load_dais(args.da_file)
 
     data_keys = set()
     data = []
-    for text, abstr in zip(texts, abstrs):
+    das_out = []
+    for text, abstr, da in zip(texts, abstrs, das):
         key = text_key(text)
         if key in data_keys:  # skip (delex) duplicates
             continue
         data_keys.add(key)
         data.append(process_sent(text, abstr))
+        das_out.append(da)  # TODO DAs should be processed somehow
 
     write_toks(args.out_file, data)
+    write_das(args.out_das_file, das_out)
 
 
 if __name__ == '__main__':
