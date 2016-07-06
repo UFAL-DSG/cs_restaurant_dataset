@@ -482,7 +482,7 @@
 <s id=481>V Kočáru z Vídně je možné poobědvat nebo povečeřet. Telefonní číslo je 238783195.</s>
 <s id=482>Ceny na Baráčnické rychtě jsou od 260 do 340 Kč.</s>
 <s id=483>Ferdinanda je drahá americká restaurace. </s>
-<s id=484>2 restaurace ve vyšší cenové skupině a turecké                                              </s>
+<s id=484>2 restaurace ve vyšší cenové skupině podávají tureckou kuchyni.</s>
 <s id=485>V blízkosti jaké lokality chcete být? </s>
 <s id=486>Jakou si přejete cenovou skupinu?</s>
 <s id=487>Místo je levná restaurace.</s>
@@ -516,7 +516,7 @@
 <s id=515>Můžu se zeptat, jakou cenovou kategorii hledáte?</s>
 <s id=516>Jaká cenová kategorie prosím?</s>
 <s id=517>Baráčnická rychta má nízké ceny.</s>
-<s id=518>Green Spirit je příjemná restaurace s českýmis a nice restaurant with Czech</s>
+<s id=518>Green Spirit je příjemná restaurace s českou kuchyní.</s>
 <s id=519>Je mi líto, ale česká jídla zde připravuje pouze restaurace Kočár z Vídně. </s>
 <s id=520>Restaurace Kočár z Vídně je dobré místo pro Italské a obědé menu. </s>
 <s id=521>Restauraci Green Spirit najdeme na adrese Újezd 17, má telefonní číslo 251887025 a průměrné jídlo zde stojí 220 Kč. </s>
@@ -742,7 +742,7 @@
 <s id=741>Napočítala jsem 94 restaurací, které jsou zároveň vhodné i pro děti.</s>
 <s id=742>Jaká oblast Vás zajímá?</s>
 <s id=743>Do restaurace Švejk nemohou děti.</s>
-<s id=744>The restaurant count is 135 and no kids are allowed.</s>
+<s id=744>Je tu 135 restaurací, které nejsou vhodné pro děti.</s>
 <s id=745>O restaurace v jaké cenové skupině máte zájem?</s>
 <s id=746>Nachází se zde 239 restaurací všech cenových kategorií.</s>
 <s id=747>Preferujete restauraci, která povoluje nebo nepovoluje vstup s dětmi?</s>
@@ -1867,7 +1867,7 @@
 <s id=1866>Mohu potvrdit žádost o cenové kategorie?</s>
 <s id=1867>Restaurace Ferdinanda  je levná a není vhodná pro návštěvu s dětmi.</s>
 <s id=1868>Nejsou zde restaurace, které nabízí čínská jídla a jsou levné.</s>
-<s id=1869>Nabízí se U Tučňáků a Asian.</s>
+<s id=1869>Nabízí se U Tučňáků, asijská restaurace.</s>
 <s id=1870>Kočár z Vídně je na Malé Straně na adrese Malostranské náměstí 17.</s>
 <s id=1871>Našla jsem 0 restaurací, které jsou poblíž Vinohrad a kde je povolen vstup s dětmi.</s>
 <s id=1872>Místo povoluje vstup s dětmi, a podávají zde dobré večeře ve stylu mexické kuchyně.</s>
@@ -2246,7 +2246,7 @@
 <s id=2245>Ananta je jediné místo, které nabízí vegetariánské jídlo.</s>
 <s id=2246>Je mi líto. Nejsou zde žádné levné restaurace pro vegetariány.</s>
 <s id=2247>Švejk Restaurant je ve čtvrti Žižkov a je zde povolen vstup s dětmi.</s>
-<s id=2248>Myslíte Vinohrady?       </s>
+<s id=2248>Myslíte Vinohrady?</s>
 <s id=2249>Prosím, potvrďte výběr preferované cenové kategorie.</s>
 <s id=2250>Mám pro Vás jednu restauraci. Jmenuje se Café Kampus, je to poblíž Petřínské rozhledny, hodí se pro děti a má střední ceny.</s>
 <s id=2251>Café Savoy se nachází v lokalitě Starého Města a její adresa je Náprstkova 44.</s>
@@ -2350,8 +2350,8 @@
 <s id=2349>Má být vstřícná k dětem? Prosím odpovězte ano nebo ne. </s>
 <s id=2350>Dobrý den, Kočár z Vídně je drahá restaurace.</s>
 <s id=2351>Poblíž Pražského hradu se nenachází žádná restaurace drahé cenové kategorie.</s>
-<s id=2352>Assab Eritrean je levná restaurace poblíž Václavského náměstí.</s>
-<s id=2353>Adresa Assab eritreanu je Kaprova 25 </s>
+<s id=2352>Ananta je levná restaurace poblíž Václavského náměstí.</s>
+<s id=2353>Adresa restaurace U Konšelů je Kaprova 25 </s>
 <s id=2354>Jsou zde 4 restaurace vyšší cenové skupiny, kam můžete i s dětmi.</s>
 <s id=2355>V blízkosti Dejvic jsem nenašla žádné drahé restaurace, které by byly vhodné pro děti.</s>
 <s id=2356>Jakou cenovou kategorii hledáte? </s>
@@ -2554,7 +2554,7 @@
 <s id=2553>V jaké lokalitě hledáte restaurace? </s>
 <s id=2554>Hledáte restauraci podáváající snídaně, obědy, nebo večeře?</s>
 <s id=2555>Chcete restaurace v oblasti Stromovky?</s>
-<s id=2556>Would you like to find restaurants in the mission bay restaurant or the victoria mews area?</s>
+<s id=2556>Hledáte restaurace na Žižkově nebo na Vinohradech?</s>
 <s id=2557>Hledáte restauraci, do které můžete vzít děti, nebo kam je naopak přístup dětem zakázán?</s>
 <s id=2558>BarBar je jediná možnost poblíž Prašné brány. </s>
 <s id=2559>Vím o 239 restauracích, ve kterých jsou všechna jídla dobrá.</s>
