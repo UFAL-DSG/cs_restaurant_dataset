@@ -895,7 +895,7 @@
 <s id=894>Přeji dobrou chuť k večeři.</s>
 <s id=895>Ferdinanda se nachází v části Nusle a patří do levné cenové kategorie.</s>
 <s id=896>Ananta je dobrá restaurace. </s>
-<s id=897>Green Spirit je jediné místo v severní oblasti, kde si můžete dát večeři za nízkou cenu.in the north bernal heights area.</s>
+<s id=897>Green Spirit je jediné místo v oblasti Žižkova, kde si můžete dát večeři za nízkou cenu.in the north bernal heights area.</s>
 <s id=898>Telefonní číslo restaurace Kočár z Vídně, která leží poblíž Petřínské rozhledny, je 251621056.</s>
 <s id=899>Baráčnická rychta je levná a nachází se poblíž Karlova mostu. </s>
 <s id=900>BarBar vede francouzskou kuchyni, jeho číslo je 270201029</s>
