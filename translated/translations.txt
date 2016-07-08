@@ -200,7 +200,7 @@
 <s id=199>Adresa restaurace Ferdinanda je Tržiště 6 a telefonní číslo je 222534711.</s>
 <s id=200>Café Savoy se nachází poblíž Prašné brány.</s>
 <s id=201>Děkuji, na shledanou.</s>
-<s id=202>Jaký druh cenového rozpětí hledáte?</s>
+<s id=202>Jakou kategorii cen hledáte?</s>
 <s id=203>Kde byste chtěli jíst?</s>
 <s id=204>Našla jsem restauraci U Konšelů na Smíchově.</s>
 <s id=205>Adresa restaurace Kočár z Vídně je Malostranské náměstí 22.</s>
@@ -302,7 +302,7 @@
 <s id=301>Jaký typ jídla hledáte?</s>
 <s id=302>Restaurace Švejk nabízí vegetariánské večeře.</s>
 <s id=303>V restauraci Pivo & Basilico můžete povečeřet.</s>
-<s id=304>Můžete mi, prosím, říct cenové rozpětí?</s>
+<s id=304>Můžete mi, prosím, říct cenovou kategorii?</s>
 <s id=305>Nabízíme restaurace ve všech cenových skupinách.</s>
 <s id=306>Prosím uveďte cenovou kategorii.</s>
 <s id=307>Kromě restaurace U Tučňáků se zde nenachází žádný další podnik, který by servíroval mexickou kuchyni.</s>
@@ -405,7 +405,7 @@
 <s id=404>Pivo & Basilico je pro Vás vhodná restaurace.</s>
 <s id=405>Jediná restaurace, kterou jsem našla, je Café Kampus.</s>
 <s id=406>Restaurace Ferdinanda nabízí mexickou kuchyni, ale není vhodná pro návštěvu s dětmi.</s>
-<s id=407>Cenové rozpětí v restauraci U Tučňáků je normální.</s>
+<s id=407>Cenová skupina v restauraci U Tučňáků je normální.</s>
 <s id=408>Ceny v Baráčnické rychtě se pohybují mezi 150 a 290 Kč.</s>
 <s id=409>Na shledanou.</s>
 <s id=410>Café Kampus se nachází v blízkosti Karlína a má střední ceny.</s>
@@ -566,7 +566,7 @@
 <s id=565>Café Savoy je americká restaurace vstřícná k dětem, je blízko Pražského hradu.</s>
 <s id=566>Café Savoy je na Malostranském náměstí 9.</s>
 <s id=567>Telefonní číslo BarBaru je 264213007.</s>
-<s id=568>Restaurace Pivo & Basilico je v normálním cenovém rozpětí.</s>
+<s id=568>Restaurace Pivo & Basilico je v normální cenové skupině.</s>
 <s id=569>Přeji příjemný den.</s>
 <s id=570>Našla jsem 4 restaurace, kde jsou děti vítány, nachází se v Nuslích a dobře zde poobědváte.</s>
 <s id=571>Jakou cenovou skupinu si přejete?</s>
@@ -1085,9 +1085,9 @@
 <s id=1084>Café Savoy se nachází v ulici Kaprova 1.</s>
 <s id=1085>V Café Kampus si můžete dát dobrý oběd či večeři.</s>
 <s id=1086>Blízko čeho chcete, aby se nacházela, poblíž Václavského náměstí?</s>
-<s id=1087>Green Spirit je turecká restaurace v normálním cenovém rozpětí, která je vhodná pro návštěvu s dětmi.</s>
+<s id=1087>Green Spirit je turecká restaurace v normální cenové skupině, která je vhodná pro návštěvu s dětmi.</s>
 <s id=1088>V Café Savoy podávají večeře.</s>
-<s id=1089>Mohu se zeptat, jaké cenové rozpětí hledáte?</s>
+<s id=1089>Mohu se zeptat, jakou cenovou skupinu hledáte?</s>
 <s id=1090>U Konšelů najdete poblíž Václavského náměstí a ceny jsou zde střední.</s>
 <s id=1091>Jediná restaurace v seznamu poblíž Pražského hradu s přijatelnými cenami je BarBar. Mají otevřeno v době večeře.</s>
 <s id=1092>Za večeři v Café Savoy zaplatíte přibližně 150 až 220 Kč.</s>
@@ -1104,7 +1104,7 @@
 <s id=1103>Ferdinanda je levná. Podávají zde vegetariánská jídla.</s>
 <s id=1104>Jakou cenovou kategorii hledáte?</s>
 <s id=1105>Prosím, o jakou cenovou skupinu máte zájem?</s>
-<s id=1106>V nabídce je 239 restaurací pro jakékoli cenové rozpětí.</s>
+<s id=1106>V nabídce je 239 restaurací pro jakoukoliv cenovou skupinu.</s>
 <s id=1107>V jaké oblasti si přejete hledat?</s>
 <s id=1108>Místo poblíž Petřínské věže nabízí nízké ceny.</s>
 <s id=1109>Ano, restaurace Pivo & Basilico je vhodná pro děti.</s>
@@ -1209,7 +1209,7 @@
 <s id=1208>Můžete mi poskytnout ještě další informace?</s>
 <s id=1209>Café Savoy je restaurace vhodná pro oběd, nepovoluje vstup dětem a ceny jsou tu průměrné.</s>
 <s id=1210>Adresa restaurace Green Spirit je Újezd 27. Ceny jsou okolo 220 Kč. Telefonní číslo je 222108476</s>
-<s id=1211>Hledáte restauraci v normálním cenovém rozpětí?</s>
+<s id=1211>Hledáte restauraci v normální cenové skupině?</s>
 <s id=1212>Našla jsem 3 levné turecké restaurace.</s>
 <s id=1213>Zajímá vás, zda sem mohou děti?</s>
 <s id=1214>Nenašla jsem žádnou vegetariánskou restauraci, která by nebyla vhodná pro děti.</s>
@@ -1274,7 +1274,7 @@
 <s id=1273>Přejete si informace o cenách v této restauraci?</s>
 <s id=1274>Poblíž se bohužel nenacházejí žádné vegetariánské restaurace, které by podávaly brunch.</s>
 <s id=1275>V této oblasti najdete 17 asijských restaurací.</s>
-<s id=1276>Chcete znát jejich cenové rozpětí?</s>
+<s id=1276>Chcete znát jejich cenovou skupinu?</s>
 <s id=1277>V restauraci Green Spirit podávají německá jídla.</s>
 <s id=1278>Telefonní číslo Místa je 216099055</s>
 <s id=1279>Restaurace Baráčnická rychta se nachází na Starém Městě.</s>
@@ -1465,7 +1465,7 @@
 <s id=1464>Mám tu příjemnou restauraci U Tučňáků.</s>
 <s id=1465>V nabídce je 239 restaurací v různých cenových relacích.</s>
 <s id=1466>Mohu se ujistit, že vám nezáleží na tom, jaké jídlo nabízejí?</s>
-<s id=1467>Mám tu 239 restaurací, které nabízejí jídla po celý den v různém cenovém rozpětí.</s>
+<s id=1467>Mám tu 239 restaurací, které nabízejí jídla po celý den v různých cenových skupinách.</s>
 <s id=1468>Jaký druh jídla hledáte?</s>
 <s id=1469>Mám tu 239 restaurací, které vaří všechna jídla v různých cenových kategoriích.</s>
 <s id=1470>Je pro Vás důležité, jestli do restaurace mohou děti?</s>
@@ -1492,7 +1492,7 @@
 <s id=1491>Restaurace U Konšelů leží poblíž televizní věže na adrese Náprstkova 8 s poštovním směrovacím číslem 151 00. Telefonní číslo je 260706716.</s>
 <s id=1492>Máte rádi německou kuchyni?</s>
 <s id=1493>Je tu indická restaurace Kočár z Vídně.</s>
-<s id=1494>Upřednostňujete některé cenové rozpětí?</s>
+<s id=1494>Upřednostňujete některou cenovou skupinu?</s>
 <s id=1495>Typická cena v restauraci U Konšelů je 220 Kč.</s>
 <s id=1496>Přejete si restauraci poblíž Staroměstského náměstí?</s>
 <s id=1497>Není za co, na shledanou.</s>
@@ -1534,13 +1534,13 @@
 <s id=1533>V Dejvicích je 72 levných restaurací.</s>
 <s id=1534>Našla jsem 2 restaurace poblíž Stromovky, které nabízí obědy a jsou vhodné pro děti.</s>
 <s id=1535>Jakou cenovou relaci byste rádi?</s>
-<s id=1536>Café Savoy je restaurace přesně pro vás. Je v normálním cenovém rozpětí, vhodná pro oběd i návštěvu s dětmi a nedaleko Stromovky.</s>
+<s id=1536>Café Savoy je restaurace přesně pro vás. Je v normální cenové skupině, vhodná pro oběd i návštěvu s dětmi a nedaleko Stromovky.</s>
 <s id=1537>Také doporučuji restauraci U Konšelů. Je levná, dobrá v době obědů, v blízko Václavského náměstí a je vhodná pro návštěvu s dětmi</s>
 <s id=1538>Café Savoy se nachází na Žatecké 42. Ceny tam jsou mezi 230 a 290 Kč.</s>
 <s id=1539>Jediná restaurace, kterou jsem našla, aby byla vhodná pro děti, byla poblíž Václavského náměstí a měla dobré obědy, je restaurace U Tučňáků.</s>
 <s id=1540>Do Café Kampus se dovoláte na čísle 226699296.</s>
 <s id=1541>Uvidíme se!</s>
-<s id=1542>Restaurace U Konšelů v Dejvicích je v normálním cenovém rozpětí.</s>
+<s id=1542>Restaurace U Konšelů v Dejvicích je v normální cenové skupině.</s>
 <s id=1543>Restaurace Ananta je skvělá pro večeře, telefonní číslo je 224249065</s>
 <s id=1544>Café Savoy je restaurace s průměrnými cenami, kde si můžete dát francouzské jídlo.</s>
 <s id=1545>Chcete více informací?</s>
@@ -1554,7 +1554,7 @@
 <s id=1553>V blízkosti Pražského hradu se nacházejí 3 restaurace vhodné pro večeři.</s>
 <s id=1554>Můžete prosím upřesnit, zdali preferujete restaurace s možností vstupu s dětmi?</s>
 <s id=1555>Ferdinanda je příjemná restaurace blízko Petřínské rozhledny, dobře zde poobědváte a není vhodná pro děti.</s>
-<s id=1556>Je zde 51 restaurací v drahém cenovém rozpětí, které podávají večeře.</s>
+<s id=1556>Je zde 51 restaurací v drahé cenové skupině, které podávají večeře.</s>
 <s id=1557>Jaký druh jídla chcete?</s>
 <s id=1558>Café Savoy je levná restaurace, kde k večeři podávají americkou kuchyni.</s>
 <s id=1559>Můžete mi poskytnout více informací?</s>
@@ -1598,7 +1598,7 @@
 <s id=1597>Zkuste restauraci U Konšelů poblíž Karlova mostu, mají zde nízké ceny.</s>
 <s id=1598>Na telefonním čísle 215703506 si můžete popovídat s fajn lidmi z restaurace Švejk.</s>
 <s id=1599>Ananta se nachází na adrese Malostranské náměstí 20.</s>
-<s id=1600>Je zde restaurace Místo, která je v levném cenovém rozpětí a nabízí americkou kuchyni.</s>
+<s id=1600>Je zde restaurace Místo, která je v levné cenové skupině a nabízí americkou kuchyni.</s>
 <s id=1601>Adresa Baráčnické rychty je Národní 13, 117 00.</s>
 <s id=1602>Pivo & Basilico je útulná restaurace.</s>
 <s id=1603>Pardon, na Malé Straně není žádná cenově přijatelná restaurace.</s>
@@ -1688,7 +1688,7 @@
 <s id=1687>Chcete najít restauraci, která povoluje vstup dětem?</s>
 <s id=1688>Místo je levná čínská restaurace v Dejvicích, která je přístupná dětem.</s>
 <s id=1689>Přejete si restauraci, kde je, nebo není povolen vstup s dětmi?</s>
-<s id=1690>Mohu potvrdit, že hledáte normální cenové rozpětí?</s>
+<s id=1690>Mohu potvrdit, že hledáte normální cenovou skupinu?</s>
 <s id=1691>Poblíž čeho si přejete hledat?</s>
 <s id=1692>Jakou cenovou kategorii máte na mysli?</s>
 <s id=1693>Mohu potvrdit, že chcete restauraci v blízkosti Václavského náměstí?</s>
@@ -1788,7 +1788,7 @@
 <s id=1787>Na Žižkově se nachází mexická restaurace, která se jmenuje U Konšelů.</s>
 <s id=1788>Místo je krásná restaurace, která vyhovuje vašim požadavkům.</s>
 <s id=1789>Café Savoy patří do nižší cenové kategorie.</s>
-<s id=1790>Pro potvrzení, hledáte restauraci v levném cenovém rozpětí?</s>
+<s id=1790>Pro potvrzení, hledáte restauraci v levné cenové skupině?</s>
 <s id=1791>Café Kampus sídlí na adrese Tržiště 50 a jídlo zde seženete za 50 až 100 Kč.</s>
 <s id=1792>Restaurace Pivo & Basilico se nachází poblíž Václavského náměstí, je zde povolen vstup s dětmi a zároveň je to dobré místo na večeři.</s>
 <s id=1793>Mohu se jen ujistit, že byste rádi našli drahou restauraci?</s>
@@ -1813,7 +1813,7 @@
 <s id=1812>Green Spirit je drahá restaurace, ve které nejsou děti vítány.</s>
 <s id=1813>Bohužel jsem nenašla žádné drahé restaurace, kde byste dobře posnídali.</s>
 <s id=1814>Mohu vám pomoci najít restauraci blízko nějakého určitého místa?</s>
-<s id=1815>Mohu vám pomoci najít cenové rozpětí pro restauraci?</s>
+<s id=1815>Mohu vám pomoci najít restauraci v nějaké konkrétní cenové skupině?</s>
 <s id=1816>Ferdinanda je dobrá restaurace.</s>
 <s id=1817>V blízkosti Staroměstského náměstí se nachází 2 restaurace, které mají normální ceny a jsou dobré pro jakýkoli druh jídla.</s>
 <s id=1818>Restaurace Švejk je příjemná restaurace s tureckou kuchyní, která se nachází blízko Žižkovské televizní věže, dobře zde povečeříte a patří do střední cenové kategorie.</s>
@@ -2175,7 +2175,7 @@
 <s id=2174>Švejk Restaurant je poblíž Petřínské věže a ceny jsou střední.</s>
 <s id=2175>Našla jsem 4 restaurace ve střední cenové skupině poblíž Prašné brány, které jsou vhodné pro večeři.</s>
 <s id=2176>Telefonní číslo do BarBaru je 295532283. Ceny se pohybují okolo 220 Kč.</s>
-<s id=2177>U Tučňáků je restaurace vhodná pro večeře blízko Prašné brány s normálním cenovým rozpětím.</s>
+<s id=2177>U Tučňáků je restaurace vhodná pro večeře blízko Prašné brány s normálními cenami.</s>
 <s id=2178>Můžu potvrdit, že chcete restauraci, kam nemohou děti?</s>
 <s id=2179>Ferdinanda je krásná restaurace v mírné cenové relaci, která není vhodná pro děti.</s>
 <s id=2180>Mám tu 36 restaurací, kde dobře poobědváte jídlo různých kuchyní.</s>
@@ -2394,9 +2394,9 @@
 <s id=2393>Café Savoy patří do drahé cenové kategorie. Je poblíž Václavského náměstí a nabízí francouzskou kuchyni.</s>
 <s id=2394>Café Kampus patří mezi levné restaurace a neumožňuje vstup dětem.</s>
 <s id=2395>Adresa restaurace Ananta je Žatecká 42 a bohužel nevím, jakou kuchyni zde připravují. Omlouvám se.</s>
-<s id=2396>Restaurace Green Spirit je asijská restaurace v normálním cenovém rozpětí, která je vhodná pro děti.</s>
+<s id=2396>Restaurace Green Spirit je asijská restaurace v normální cenové kategorii, která je vhodná pro děti.</s>
 <s id=2397>Našla jsem 2 restaurace střední kategorie, které nabízejí americké speciality a umožňují vstup dětem.</s>
-<s id=2398>Restaurace Švejk je poblíž Petřínské rozhledny, nabízí turecká jídla v normálním cenovém rozpětí a je vhodná pro návštěvu s dětmi.</s>
+<s id=2398>Restaurace Švejk je poblíž Petřínské rozhledny, nabízí turecká jídla v normální cenové skupině a je vhodná pro návštěvu s dětmi.</s>
 <s id=2399>Adresa restaurace Místo je Kaprova 17 a telefon 218515534.</s>
 <s id=2400>Café Kampus je v nižší cenové skupině.</s>
 <s id=2401>Místo je dobrou volbou na večeři v nižší cenové skupině na Malé Straně.</s>
@@ -2458,7 +2458,7 @@
 <s id=2457>Baráčnická rychta je turecká restaurace</s>
 <s id=2458>Místo je vegetariánská restaurace vhodná na oběd.</s>
 <s id=2459>Je to poblíž Václavského náměstí.</s>
-<s id=2460>Restaurace Kočár z Vídně je v normálním cenovém rozpětí blízko Staroměstského náměstí a je vhodná pro děti</s>
+<s id=2460>Restaurace Kočár z Vídně je v normální cenové skupině blízko Staroměstského náměstí a je vhodná pro děti</s>
 <s id=2461>Zajímá vás, zda je to blízko Stromovky?</s>
 <s id=2462>Zajímalo by vás, jestli je blízko Pražskému hradu nějaké jiné místo?</s>
 <s id=2463>Pouze Ferdinanda blízko Petřínské rozhledny je vhodná pro děti a má normální ceny.</s>
