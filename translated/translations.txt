@@ -253,7 +253,7 @@
 <s id=252>Poblíž Petřínské rozhledny nejsou žádné restaurace vhodné na brunch.</s>
 <s id=253>Green Spirit je dobré místo na snídani poblíž Staroměstského náměstí.</s>
 <s id=254>Na shledanou.</s>
-<s id=255>Hledáte něco na oběd nebo na večeři?</s>
+<s id=255>Hledáte něco na oběd nebo večeři?</s>
 <s id=256>Hledáte dražší, nebo levnější restauraci?</s>
 <s id=257>V jaké cenové kategorii chcete hledat, v levné nebo drahé?</s>
 <s id=258>Chcete podnik, kam mohou děti?</s>
@@ -1402,7 +1402,7 @@
 <s id=1401>Ananta nabízí menu vhodné na večeři a nachází se v Karmelitské 19 v Nuslích.</s>
 <s id=1402>Jakou oblast preferujete, Malou Stranu?</s>
 <s id=1403>Našla jsem restauraci na Starém Městě, která se jmenuje BarBar a podává italskou kuchyni.</s>
-<s id=1404>Jaké město, obec nebo městskou část hledáte?</s>
+<s id=1404>Jakou městskou část hledáte?</s>
 <s id=1405>Děkuji za zavolání. Na shledanou.</s>
 <s id=1406>Jsou zde dvě restaurace, které podávají brunch.</s>
 <s id=1407>Švejk Restaurant podává levný brunch</s>
@@ -2554,7 +2554,7 @@
 <s id=2553>V jaké lokalitě hledáte restaurace?</s>
 <s id=2554>Hledáte restauraci podávající snídaně, obědy, nebo večeře?</s>
 <s id=2555>Chcete restaurace v oblasti Stromovky?</s>
-<s id=2556>Hledáte restaurace na Žižkově nebo na Vinohradech?</s>
+<s id=2556>Hledáte restaurace na Žižkově nebo Vinohradech?</s>
 <s id=2557>Hledáte restauraci, do které můžete vzít děti, nebo kam je naopak přístup dětem zakázán?</s>
 <s id=2558>BarBar je jediná možnost poblíž Prašné brány.</s>
 <s id=2559>Vím o 239 restauracích, ve kterých jsou všechna jídla dobrá.</s>
