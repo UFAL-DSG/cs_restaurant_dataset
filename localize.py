@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import codecs
 import random
 import re
+import sys
 from argparse import ArgumentParser
 
 from recordclass import recordclass
@@ -74,9 +75,11 @@ def load_dais(file_name):
     data = []
     with codecs.open(file_name, 'r', encoding='UTF-8') as fh:
         for line in fh:
-            line = line.strip().split('&')
-            data.append([DAI.parse(part) for part in line])
+            line = line.strip()
+            dais = re.split(r'(?<=\))&', line)
+            data.append([DAI.parse(dai) for dai in dais])
     return data
+
 
 
 def write_toks(file_name, data):
