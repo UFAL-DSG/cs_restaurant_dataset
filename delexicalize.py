@@ -15,7 +15,7 @@ import json
 from tgen.debug import exc_info_hook
 # Start IPdb on error in interactive mode
 sys.excepthook = exc_info_hook
-
+sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
 
 def sublist_pos(needle, haystack):
     n = len(needle)
@@ -36,10 +36,11 @@ def load_texts(file_name):
 
 class Delexicalizer(object):
 
-    def __init__(self, slots, surface_forms, tagger_model):
+    def __init__(self, slots, surface_forms, tagger_model, lemma_output):
         self.slots = slots
         self.surface_forms = surface_forms
         self.analyzer = Analyzer(tagger_model)
+        self.lemma_output = lemma_output
 
     def delexicalize(self, text, da, counter=-1):
         analysis = self.analyzer.analyze(text)
@@ -68,9 +69,21 @@ class Delexicalizer(object):
                 print >> sys.stderr, 'Lemmas: ' + ' '.join(lemmas)
                 print >> sys.stderr
 
+        if self.lemma_output:
+            return [re.sub(r'/.*', r'', tok) if tok.startswith('X-') else lemma + (".NEG" if tag[10] == "N" else "")
+                    for tok, lemma, tag in zip(delex, lemmas, tags)
+                    if tok is not None]
         return [tok for tok in delex if tok is not None]
 
     def get_surface_forms(self, slot, value):
+        if slot == 'price':
+            prices = re.findall(r'[0-9]+', value)
+            value_temp = re.sub(r'[0-9]+', r'_', value)
+            surface_forms = self.surface_forms[slot][value_temp]
+            for price in prices:
+                surface_forms = [re.sub(r'_', price, vt, count=1) for vt in surface_forms]
+            return [sf.split(' ') for sf in surface_forms]
+
         if re.search(r'\s+(and|or)\s+', value):
             sub_sf = [self.get_surface_forms(slot, subval)
                       for subval in re.split(r'\s*(?:and|or)\s*', value)]
@@ -83,6 +96,7 @@ class Delexicalizer(object):
             num = value.split(' ')[-1]
             return [sf.split(' ') + [num]
                     for sf in self.surface_forms['street'][street]]
+
         elif slot in self.surface_forms:
             return [sf.split(' ') for sf in self.surface_forms[slot][value]]
         else:
@@ -103,7 +117,7 @@ class Delexicalizer(object):
             return '/n:' + tag[4]
 
         if re.match(r'^V', tags[pos]):
-            return 'v:fin'
+            return '/v:fin'
 
         return ''
 
@@ -115,6 +129,7 @@ def main():
     ap.add_argument('-s', '--slots', type=str, help='List of slots to delexicalize')
     ap.add_argument('-f', '--surface-forms', type=str, help='Input file with surface forms for slot values')
     ap.add_argument('-t', '--tagger-model', type=str, help='Path to Morphodita tagger model')
+    ap.add_argument('-l', '--lemma-output', action='store_true', help='Output only lemmas instead of tokens?')
     ap.add_argument('text_file', type=str, help='Input lexicalized text file')
     ap.add_argument('da_file', type=str, help='Input DA file')
     ap.add_argument('out_file', type=str, help='Output delexicalized text file')
@@ -127,7 +142,7 @@ def main():
     else:
         surface_forms = None
 
-    delex = Delexicalizer(args.slots.split(','), surface_forms, args.tagger_model)
+    delex = Delexicalizer(args.slots.split(','), surface_forms, args.tagger_model, args.lemma_output)
 
     texts = load_texts(args.text_file)
     das = load_dais(args.da_file)
