@@ -49,7 +49,8 @@ class DAI(recordclass('DAI', ['dat', 'slot', 'value'])):
         value = re.sub(r'^[\'"]', '', value)
         value = re.sub(r'[\'"]#?$', '', value)
         value = re.sub(r'"#? and "', ' and ', value)
-        value = re.sub(r'_', ' ', value)
+        if not value.startswith('X-') and value != 'dont_care':
+            value = re.sub(r'_', ' ', value)
         return DAI(dat, slot, value)
 
 

@@ -7,7 +7,7 @@ import re
 from argparse import ArgumentParser
 
 from itertools import product
-from localize import load_dais, write_toks
+from localize import load_dais, write_toks, DAI
 from morpho import Analyzer, trunc_lemma
 import sys
 import json
@@ -16,6 +16,7 @@ from tgen.debug import exc_info_hook
 # Start IPdb on error in interactive mode
 sys.excepthook = exc_info_hook
 sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
+
 
 def sublist_pos(needle, haystack):
     n = len(needle)
@@ -37,10 +38,13 @@ def load_texts(file_name):
 class Delexicalizer(object):
 
     def __init__(self, slots, surface_forms, tagger_model, output_format='plain'):
-        self.slots = slots
-        self.surface_forms = surface_forms
+        self.slots = slots.split(',')
+        self.surface_forms = None
+        if surface_forms:
+            with codecs.open(surface_forms, 'rb', 'UTF-8') as fh:
+                self.surface_forms = json.load(fh)
         self.analyzer = Analyzer(tagger_model)
-        self.lemma_output = lemma_output
+        self.output_format = output_format
 
     def delexicalize_text(self, text, da, counter=-1):
         """Delexicalize a single sentence (given the corresponding DA)."""
@@ -84,14 +88,14 @@ class Delexicalizer(object):
 
     def delexicalize_da(self, da):
         """Delexicalize a single DA."""
-        da = [DAI(dai) for dai in da]  # deep copy
+        da = [DAI(dai.dat, dai.slot, dai.value) for dai in da]  # deep copy
         # now delex the values
         for dai in da:
             if dai.slot not in self.slots and (dai.slot != 'address' or 'street' not in self.slots):
                 continue
             if not dai.value or dai.value in ['dont care', 'dont_care', 'none']:
                 continue
-            dai.value = 'X-' + dai_slot
+            dai.value = 'X-' + dai.slot
         return da
 
     def get_surface_forms(self, slot, value):
@@ -159,13 +163,7 @@ def main():
 
     args = ap.parse_args()
 
-    if args.surface_forms:
-        with codecs.open(args.surface_forms, 'rb', 'UTF-8') as fh:
-            surface_forms = json.load(fh)
-    else:
-        surface_forms = None
-
-    delex = Delexicalizer(args.slots.split(','), surface_forms, args.tagger_model,
+    delex = Delexicalizer(args.slots, args.surface_forms, args.tagger_model,
                           'lemma' if args.lemma_output else 'plain')
 
     texts = load_texts(args.text_file)
