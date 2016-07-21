@@ -36,13 +36,14 @@ def load_texts(file_name):
 
 class Delexicalizer(object):
 
-    def __init__(self, slots, surface_forms, tagger_model, lemma_output):
+    def __init__(self, slots, surface_forms, tagger_model, output_format='plain'):
         self.slots = slots
         self.surface_forms = surface_forms
         self.analyzer = Analyzer(tagger_model)
         self.lemma_output = lemma_output
 
-    def delexicalize(self, text, da, counter=-1):
+    def delexicalize_text(self, text, da, counter=-1):
+        """Delexicalize a single sentence (given the corresponding DA)."""
         analysis = self.analyzer.analyze(text)
         lemmas = [trunc_lemma(tok[1]).lower() for tok in analysis]
         tags = [tok[2] for tok in analysis]
@@ -65,17 +66,39 @@ class Delexicalizer(object):
                     break
 
             if not found:
-                print >> sys.stderr, unicode(counter) + ': Not found: ' + dai.value + ' | ' + unicode(da) + ' | ' + text
+                # print out everything that couldn't be found -- error checking in the set
+                print >> sys.stderr, (unicode(counter) + ': Not found: ' + dai.value + ' | ' +
+                                      unicode(da) + ' | ' + text)
                 print >> sys.stderr, 'Lemmas: ' + ' '.join(lemmas)
                 print >> sys.stderr
 
-        if self.lemma_output:
-            return [re.sub(r'/.*', r'', tok) if tok.startswith('X-') else lemma + (".NEG" if tag[10] == "N" else "")
-                    for tok, lemma, tag in zip(delex, lemmas, tags)
-                    if tok is not None]
+        lemmas = [re.sub(r'/.*', r'', tok)
+                  if (tok is not None and tok.startswith('X-'))
+                  else lemma.lower() + (".NEG" if tag[10] == "N" else "")
+                  for tok, lemma, tag in zip(delex, lemmas, tags)]
+        if self.output_format == 'factors':
+            return [(tok, lemma, tag) for tok, lemma, tag in zip(delex, lemmas, tags) if tok is not None]
+        if self.output_format == 'lemma':
+            return [lemma for tok, lemma in zip(delex, lemmas) if tok is not None]
         return [tok for tok in delex if tok is not None]
 
+    def delexicalize_da(self, da):
+        """Delexicalize a single DA."""
+        da = [DAI(dai) for dai in da]  # deep copy
+        # now delex the values
+        for dai in da:
+            if dai.slot not in self.slots and (dai.slot != 'address' or 'street' not in self.slots):
+                continue
+            if not dai.value or dai.value in ['dont care', 'dont_care', 'none']:
+                continue
+            dai.value = 'X-' + dai_slot
+        return da
+
     def get_surface_forms(self, slot, value):
+        """Get all possible surface forms (lemmas) for the given slot and value.
+        Works around coordination, price templates, and address (where only street names
+        must be in the surface forms list)."""
+
         if slot == 'price':
             prices = re.findall(r'[0-9]+', value)
             value_temp = re.sub(r'[0-9]+', r'_', value)
@@ -142,14 +165,15 @@ def main():
     else:
         surface_forms = None
 
-    delex = Delexicalizer(args.slots.split(','), surface_forms, args.tagger_model, args.lemma_output)
+    delex = Delexicalizer(args.slots.split(','), surface_forms, args.tagger_model,
+                          'lemma' if args.lemma_output else 'plain')
 
     texts = load_texts(args.text_file)
     das = load_dais(args.da_file)
     delexs = []
 
     for counter, (text, da) in enumerate(zip(texts, das)):
-        delexs.append(delex.delexicalize(text, da, counter))
+        delexs.append(delex.delexicalize_text(text, da, counter))
 
     write_toks(args.out_file, delexs)
 
