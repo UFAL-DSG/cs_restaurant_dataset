@@ -2209,7 +2209,7 @@ inform(name="Švejk Restaurant")&inform(near="Old Town Square")&inform(good_for_
 inform(area=Hradčany)&inform(address="Štefánikova 24")&inform(name=Místo)
 inform_no_match(food=German)&inform_no_match(price_range=cheap)
 inform(name="Ananta")&inform(food=French)
-inform(name="Švejk Restaurant")&inform(phone=265329999)&inform(postcode=94102)
+inform(name="Švejk Restaurant")&inform(phone=265329999)&inform(postcode="121 00")
 inform(name="U Tučňáků")&inform(kids_allowed=no)
 inform(near="Old Town Square")&inform(name="Green Spirit")&inform(price_range=cheap)&inform(kids_allowed=no)
 ?reqmore()

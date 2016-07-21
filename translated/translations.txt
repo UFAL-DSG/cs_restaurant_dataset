@@ -2209,7 +2209,7 @@
 <s id=2208>Místo se nachází na Hradčanech a jeho adresa je Štefánikova 24.</s>
 <s id=2209>Bohužel zde nejsou levné restaurace, které podávají německá jídla.</s>
 <s id=2210>V restauraci Ananta nabízejí francouzskou kuchyni.</s>
-<s id=2211>Telefonní číslo do Švejk Restaurantu je 265329999.</s>
+<s id=2211>Telefonní číslo do Švejk Restaurantu je 265329999 a poštovní směrovací je 121 00.</s>
 <s id=2212>U Tučňáků se nehodí pro děti.</s>
 <s id=2213>Green Spirit je levná restaurace nedaleko Staroměstského náměstí, která není vhodná pro návštěvu s dětmi.</s>
 <s id=2214>S čím Vám ještě můžu pomoci?</s>
