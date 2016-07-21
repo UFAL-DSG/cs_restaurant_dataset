@@ -7,8 +7,7 @@ import re
 from argparse import ArgumentParser
 
 from itertools import product
-from localize import load_dais, write_toks, DAI
-from morpho import Analyzer, trunc_lemma
+from util import Analyzer, trunc_lemma, load_dais, write_toks, DAI
 import sys
 import json
 

@@ -6,8 +6,7 @@ import re
 import sys
 import codecs
 from argparse import ArgumentParser
-from localize import load_dais, write_das, DAI
-from delexicalize import load_texts
+from util import load_dais, load_texts, write_das, DAI
 import kenlm
 import numpy as np
 from delexicalize import Delexicalizer
@@ -67,7 +66,7 @@ class Expander(object):
     def expand(self):
         log_info("Expanding...")
         for da_key, (da, orig_pos) in self.orig_da_positions.iteritems():
-            if not da_key in self.transl_da_positions:
+            if da_key not in self.transl_da_positions:
                 print >> sys.stderr, "DA key not found: %s" % da_key
                 print >> sys.stderr, "Original positions: %s" % ", ".join([str(p) for p in orig_pos])
                 continue
