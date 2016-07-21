@@ -11,10 +11,11 @@ from delexicalize import load_texts
 import kenlm
 import numpy as np
 from delexicalize import Delexicalizer
+from tgen.logf import log_info
 
 
 def da_key(da):
-    return "&".join([unicode(dai) for dai in sorted(da, key=lambda dai: dai.slot)])
+    return "&".join([unicode(dai) for dai in sorted(da, key=lambda dai: (dai.slot, dai.value))])
 
 
 def write_texts(file_name, texts):
@@ -24,6 +25,8 @@ def write_texts(file_name, texts):
 
 
 class Expander(object):
+
+    SPECIAL_VALUES = [None, 'dont_care', 'none', 'yes', 'no', 'yes or no']
 
     def __init__(self, args):
         # read inputs
@@ -35,6 +38,7 @@ class Expander(object):
         # run delexicalization, store tokens + lemmas + tags, delex DAs
         self.delexicalizer = Delexicalizer(args.slots, args.surface_forms, args.tagger_model,
                                            output_format='factors')
+        log_info("Delexicalizing...")
         self.delex_texts = []
         self.delex_das = []
         for counter, (da, text) in enumerate(zip(self.transl_das, self.transl_texts)):
@@ -43,6 +47,7 @@ class Expander(object):
 
         self.values = self.get_values(self.transl_das)
 
+        log_info("Grouping DAs...")
         self.orig_da_positions = self.group_das(self.orig_das, check_delex=True)
         self.transl_da_positions = self.group_das(self.delex_das)
 
@@ -51,6 +56,7 @@ class Expander(object):
         self.out_das = [None] * len(self.orig_das)
         self.out_delex_das = [None] * len(self.orig_das)
 
+        log_info("Loading LM...")
         self.lm = kenlm.Model(args.lm)
 
         self.out_texts_file = args.out_texts
@@ -59,7 +65,12 @@ class Expander(object):
         self.out_delex_das_file = args.out_delex_das
 
     def expand(self):
+        log_info("Expanding...")
         for da_key, (da, orig_pos) in self.orig_da_positions.iteritems():
+            if not da_key in self.transl_da_positions:
+                print >> sys.stderr, "DA key not found: %s" % da_key
+                print >> sys.stderr, "Original positions: %s" % ", ".join([str(p) for p in orig_pos])
+                continue
             _, transl_pos = self.transl_da_positions[da_key]
             self.expand_da(da, orig_pos, transl_pos)
 
@@ -106,7 +117,7 @@ class Expander(object):
         text = re.sub(r' ([?.,\'])', r'\1', text)
         da = [DAI(dai.dat, dai.slot, dai.value) for dai in da]  # deep copy
         for dai in da:
-            if not dai.value or dai.value in ['dont_care', 'none', 'yes', 'no', 'yes or no']:
+            if dai.value in self.SPECIAL_VALUES:
                 continue
             # relexicalize DA
             dai.value = np.random.choice(self.values[dai.slot])
@@ -136,6 +147,8 @@ class Expander(object):
         ret = {}
         for da in das:
             for dai in da:
+                if dai.value in self.SPECIAL_VALUES:  # skip reserved values
+                    continue
                 if dai.slot not in ret:
                     ret[dai.slot] = set()
                 ret[dai.slot].add(dai.value)
@@ -144,6 +157,7 @@ class Expander(object):
         return ret
 
     def write_outputs(self):
+        log_info("Writing outputs...")
         write_texts(self.out_texts_file, self.out_texts)
         write_texts(self.out_delex_texts_file, self.out_delex_texts)
         write_das(self.out_das_file, self.out_das)

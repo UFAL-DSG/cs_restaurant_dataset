@@ -12,6 +12,7 @@ from morpho import Analyzer, trunc_lemma
 import sys
 import json
 
+from tgen.logf import log_info
 from tgen.debug import exc_info_hook
 # Start IPdb on error in interactive mode
 sys.excepthook = exc_info_hook
@@ -41,8 +42,10 @@ class Delexicalizer(object):
         self.slots = slots.split(',')
         self.surface_forms = None
         if surface_forms:
+            log_info("Loading surface forms...")
             with codecs.open(surface_forms, 'rb', 'UTF-8') as fh:
                 self.surface_forms = json.load(fh)
+        log_info("Loading tagger...")
         self.analyzer = Analyzer(tagger_model)
         self.output_format = output_format
 
