@@ -1,0 +1,13 @@
+{
+    "náprstkově": ["Náprstkův", "AUFS6M---------"],
+    "ananta": ["Ananta", "NNFS1-----A----"], 
+    "ananty": ["Ananta", "NNFS2-----A----"], 
+    "anantu": ["Ananta", "NNFS4-----A----"], 
+    "anantě": ["Ananta", "NNFS6-----A----"], 
+    "ferdinanda": ["Ferdinanda", "NNFS1-----A----"], 
+    "ferdinandy": ["Ferdinanda", "NNFS2-----A----"], 
+    "ferdinandu": ["Ferdinanda", "NNFS4-----A----"], 
+    "ferdinandě": ["Ferdinanda", "NNFS6-----A----"],
+    "barbar": ["BarBar", "NNMS1-----A----"],
+    "barbaru": ["BarBar", "NNMS6-----A----"]
+}
