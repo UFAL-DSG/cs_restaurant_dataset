@@ -6,7 +6,7 @@ import re
 import sys
 import codecs
 from argparse import ArgumentParser
-from util import load_dais, load_texts, write_das, DAI
+from util import load_dais, load_texts, write_das, write_texts, write_toks, DAI
 import kenlm
 import numpy as np
 from delexicalize import Delexicalizer
@@ -17,15 +17,11 @@ def da_key(da):
     return "&".join([unicode(dai) for dai in sorted(da, key=lambda dai: (dai.slot, dai.value))])
 
 
-def write_texts(file_name, texts):
-    with codecs.open(file_name, 'wb', 'UTF-8') as fh:
-        for text in texts:
-            print >> fh, text
-
 
 class Expander(object):
 
-    SPECIAL_VALUES = [None, 'dont_care', 'none', 'yes', 'no', 'yes or no']
+    SPECIAL_VALUES = [None, '', 'dont_care', 'none', 'yes', 'no',
+                      'yes or no', 'no or yes', 'restaurant']
 
     def __init__(self, args):
         # read inputs
@@ -35,16 +31,20 @@ class Expander(object):
         self.transl_texts = load_texts(args.transl_texts)
 
         # run delexicalization, store tokens + lemmas + tags, delex DAs
-        self.delexicalizer = Delexicalizer(args.slots, args.surface_forms, args.tagger_model,
+        self.delexicalizer = Delexicalizer(args.slots, args.surface_forms,
+                                           args.tagger_model, args.tagger_overrides,
                                            output_format='factors')
         log_info("Delexicalizing...")
         self.delex_texts = []
         self.delex_das = []
+        vals_to_forms = []
         for counter, (da, text) in enumerate(zip(self.transl_das, self.transl_texts)):
-            self.delex_texts.append(self.delexicalizer.delexicalize_text(text, da, counter))
+            delex_text, v2f = self.delexicalizer.delexicalize_text(text, da, counter)
+            vals_to_forms.extend(v2f)
+            self.delex_texts.append(delex_text)
             self.delex_das.append(self.delexicalizer.delexicalize_da(da))
 
-        self.values = self.get_values(self.transl_das)
+        self.values = self.get_values(vals_to_forms)
 
         log_info("Grouping DAs...")
         self.orig_da_positions = self.group_das(self.orig_das, check_delex=True)
@@ -107,7 +107,7 @@ class Expander(object):
             relex_text, relex_da = self.relexicalize(self.delex_texts[tpos_],
                                                      self.delex_das[tpos_])
             self.out_texts[opos_] = relex_text
-            self.out_delex_texts[opos_] = self.delex_texts[tpos_]
+            self.out_delex_texts[opos_] = [tok for tok, _, _ in self.delex_texts[tpos_]]
             self.out_das[opos_] = relex_da
             self.out_delex_das[opos_] = self.delex_das[tpos_]
 
@@ -115,15 +115,24 @@ class Expander(object):
         text = " ".join([tok for tok, _, _ in text])
         text = re.sub(r' ([?.,\'])', r'\1', text)
         da = [DAI(dai.dat, dai.slot, dai.value) for dai in da]  # deep copy
+        changed = False
         for dai in da:
             if dai.value in self.SPECIAL_VALUES:
                 continue
+            changed = True
             # relexicalize DA
-            dai.value = np.random.choice(self.values[dai.slot])
+            form = re.search(r'X-' + dai.slot + r'(/(?:n|adj|adv|v):?(?:[0-9X]|attr|fin)?)?', text).group(1) or ""
             # relexicalize text
-            # TODO inflect
-            # TODO care about the PoS
-            text = re.sub(r'X-' + dai.slot + '(/[^ ]*)?', dai.value, text)
+            if len(self.values[dai.slot][form]) == 1:
+                # TODO enable reinflection?
+                # TODO restauraci Švejk = n:1
+                print >> sys.stderr, "Singleton value: %s %s %s" % (dai.slot, form, unicode(self.values[dai.slot][form]))
+            values = list(self.values[dai.slot][form])
+            value = np.random.choice(len(values))
+            value, surface = values[value]
+            dai.value = value
+            text = re.sub(r'X-' + dai.slot + r'(/[^ .,;!?]*)?', surface, text)
+        text = ('!CHECK ' if changed else '') + text
         return text, da
 
     def group_das(self, das, check_delex=False):
@@ -142,23 +151,21 @@ class Expander(object):
             groups[key] = (da, pos)
         return groups
 
-    def get_values(self, das):
+    def get_values(self, vals_to_forms_list):
         ret = {}
-        for da in das:
-            for dai in da:
-                if dai.value in self.SPECIAL_VALUES:  # skip reserved values
-                    continue
-                if dai.slot not in ret:
-                    ret[dai.slot] = set()
-                ret[dai.slot].add(dai.value)
-        for slot in ret.keys():
-            ret[slot] = list(ret[slot])
+        for slot, value, form, tokens in vals_to_forms_list:
+            if slot not in ret:
+                ret[slot] = {}
+            if form not in ret[slot]:
+                ret[slot][form] = set()
+            ret[slot][form].add((value, " ".join(tokens)))
         return ret
 
     def write_outputs(self):
         log_info("Writing outputs...")
         write_texts(self.out_texts_file, self.out_texts)
-        write_texts(self.out_delex_texts_file, self.out_delex_texts)
+        write_toks(self.out_delex_texts_file, self.out_delex_texts,
+                   capitalize=False, detok=False, lowercase=True)
         write_das(self.out_das_file, self.out_das)
         write_das(self.out_delex_das_file, self.out_delex_das)
 
@@ -172,6 +179,7 @@ def main():
     ap.add_argument('-s', '--slots', type=str, help='List of slots to delexicalize')
     ap.add_argument('-f', '--surface-forms', type=str, help='Input file with surface forms for slot values')
     ap.add_argument('-t', '--tagger-model', type=str, help='Path to Morphodita tagger model')
+    ap.add_argument('-o', '--tagger-overrides', type=str, help='Path to a JSON file with tagger overrides')
 
     ap.add_argument('orig_das', type=str, help='Input delexicalized original DAs')
 
@@ -185,6 +193,8 @@ def main():
     ap.add_argument('out_delex_das', type=str, help='Output delexicalized DAs')
 
     args = ap.parse_args()
+
+    np.random.seed(1206)
 
     ex = Expander(args)
     ex.expand()

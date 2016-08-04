@@ -90,9 +90,12 @@ def load_dais(file_name):
     return data
 
 
-def write_toks(file_name, data):
+def write_toks(file_name, data, capitalize=True, detok=True, lowercase=False):
     with codecs.open(file_name, 'w', encoding='UTF-8') as fh:
         for inst in data:
+            # lowercase everything except placeholders
+            if lowercase:
+                inst = [tok.lower() if not tok.startswith('X-') else tok for tok in inst]
             sent = ' '.join(inst)
             # join -s, -ly
             sent = re.sub(r'child -s', 'children', sent)
@@ -100,11 +103,13 @@ def write_toks(file_name, data):
             sent = re.sub(r' -ly', 'ly', sent)
             sent = re.sub(r'\s+', ' ', sent)
             # fix capitalization
-            sent = re.sub(r'( [.?!] [a-z])', lambda m: m.group(1).upper(), sent)
-            sent = re.sub(r' (Ok|ok|i) ', lambda m: ' ' + m.group(1).upper() + ' ', sent)
-            sent = sent[0].upper() + sent[1:]
+            if capitalize:
+                sent = re.sub(r'( [.?!] [a-z])', lambda m: m.group(1).upper(), sent)
+                sent = re.sub(r' (Ok|ok|i) ', lambda m: ' ' + m.group(1).upper() + ' ', sent)
+                sent = sent[0].upper() + sent[1:]
             # fix spacing
-            sent = re.sub(r' ([?.,\'])', r'\1', sent)
+            if detok:
+                sent = re.sub(r' ([?.,\'])', r'\1', sent)
             # print the output
             print >> fh, sent
 
@@ -114,6 +119,21 @@ def write_das(file_name, das):
         for da in das:
             da_str = '&'.join(unicode(dai) for dai in da)
             print >> fh, da_str
+
+
+def write_texts(file_name, texts):
+    with codecs.open(file_name, 'wb', 'UTF-8') as fh:
+        for text in texts:
+            print >> fh, text
+
+
+def load_texts(file_name):
+    data = []
+    with codecs.open(file_name, 'r', encoding='UTF-8') as fh:
+        for line in fh:
+            line = line.strip()
+            data.append(line)
+    return data
 
 
 """
@@ -139,6 +159,75 @@ class Analyzer(object):
             out.extend([(form, lemma.lemma, lemma.tag)
                         for (form, lemma) in zip(self.__forms_buf, self.__lemmas_buf)])
         return out
+
+
+class Generator(object):
+    """Morphodita generator wrapper, with support for inflecting
+    noun phrases (stop/city names, personal names)."""
+
+    def __init__(self, morpho_model):
+        self.__morpho = Morpho.load(morpho_model)
+        self.__out_buf = TaggedLemmasForms()
+
+    def generate(self, lemma, tag_wildcard, capitalized=None):
+        """Get variants for one word from the Morphodita generator. Returns
+        empty list if nothing found in the dictionary."""
+        # run the generation for this word
+        self.__morpho.generate(lemma, tag_wildcard, self.__morpho.GUESSER, self.__out_buf)
+        # see if we found any forms, return empty if not
+        if not self.__out_buf:
+            return []
+        # prepare capitalization
+        cap_func = lambda string: string
+        if capitalized == True:
+            cap_func = lambda string: string[0].upper() + string[1:]
+        elif capitalized == False:
+            cap_func = lambda string: string[0].lower() + string[1:]
+        # process the results
+        return [cap_func(form_tag.form) for form_tag in self.__out_buf[0].forms]
+
+    def inflect(self, words, case, personal_names=False, check_fails=False):
+        """Inflect a stop/city/personal name in the given case (return
+        lists of inflection variants for all words).
+
+        @param words: list of form/lemma/tag triplets from the analyzer to be inflected
+        @param case: the target case (Czech, 1-7)
+        @param personal_names: should be False for stops/cities, True for personal names
+        @param check_fails: if True, return None if the form is not in the dictionary"""
+        forms = []
+        prev_tag = ''
+        for word in words:
+            form_list = self.__inflect_word(word, case, prev_tag)
+            if not form_list:
+                if check_fails:
+                    return None
+                form_list = [word[0]]
+            forms.append(form_list)
+            prev_tag = word[2]
+        return forms
+
+    def __inflect_word(self, word, case, prev_tag, personal_names=False):
+        """Inflect one word in the given case (return a list of variants,
+        None if the generator fails)."""
+        form, lemma, tag = word
+        # inflect each word in nominative not following a noun in nominative
+        # (if current case is not nominative), avoid numbers
+        if (re.match(r'^[^C]...1', tag) and
+                (not re.match(r'^NN..1', prev_tag) or personal_names) and
+                form not in ['římská'] and
+                case != '1'):
+            # change the case in the tag, allow all variants
+            new_tag = re.sub(r'^(....)1(.*).$', r'\g<1>' + case + r'\g<2>?', tag)
+            # -ice: test both sg. and pl. versions
+            if (form.endswith('ice') and form[0] == form[0].upper() and
+                    not re.match(r'(nemocnice|ulice|vrátnice)', form, re.IGNORECASE)):
+                new_tag = re.sub(r'^(...)S', r'\1[SP]', new_tag)
+            # try inflecting, return empty list if not found in the dictionary
+            capitalized = form[0] == form[0].upper()
+            new_forms = self.generate(lemma, new_tag, capitalized)
+            return new_forms
+        else:
+            return [form]
 
 
 def trunc_lemma(lemma):
