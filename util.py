@@ -57,6 +57,17 @@ class Abst(recordclass('Abst', ['slot', 'value', 'start', 'end'])):
         return Abst(slot, value, start, end)
 
 
+def remove_dups_stable(l):
+    """Remove duplicates from a list but keep the ordering.
+
+    @return: Iterator over unique values in the list
+    """
+    seen = set()
+    for i in l:
+        if i not in seen:
+            yield i
+            seen.add(i)
+
 """
 I/O
 """
@@ -184,50 +195,55 @@ class Generator(object):
         elif capitalized == False:
             cap_func = lambda string: string[0].lower() + string[1:]
         # process the results
-        return [cap_func(form_tag.form) for form_tag in self.__out_buf[0].forms]
+        return [(cap_func(form_tag.form), form_tag.tag)
+                for form_tag in self.__out_buf[0].forms]
 
-    def inflect(self, words, case, personal_names=False, check_fails=False):
-        """Inflect a stop/city/personal name in the given case (return
-        lists of inflection variants for all words).
-
-        @param words: list of form/lemma/tag triplets from the analyzer to be inflected
-        @param case: the target case (Czech, 1-7)
-        @param personal_names: should be False for stops/cities, True for personal names
-        @param check_fails: if True, return None if the form is not in the dictionary"""
-        forms = []
+    def inflect(self, words, case=None, person=None, number=None, gender=None):
+        # use all genders for standalone adjectives (with adverbs at most)
+        forms_tags = []
         prev_tag = ''
         for word in words:
-            form_list = self.__inflect_word(word, case, prev_tag)
-            if not form_list:
-                if check_fails:
-                    return None
-                form_list = [word[0]]
-            forms.append(form_list)
+            form_tag_list = self.__inflect_word(word, prev_tag, case, person, number, gender)
+            if not form_tag_list:
+                form_tag_list = [(word[0], word[2])]
+            forms_tags.append(form_tag_list)
             prev_tag = word[2]
-        return forms
+        return forms_tags
 
-    def __inflect_word(self, word, case, prev_tag, personal_names=False):
+    def __inflect_word(self, word, prev_tag, case, person, number, gender, personal_names=False):
         """Inflect one word in the given case (return a list of variants,
         None if the generator fails)."""
         form, lemma, tag = word
+        new_tag = None
+        if person:
+            new_tag = 'VB-P---' + person + 'P-AA---'
+            if number:
+                new_tag = new_tag[0:3] + number + new_tag[4:]
         # inflect each word in nominative not following a noun in nominative
         # (if current case is not nominative), avoid numbers
-        if (re.match(r'^[^C]...1', tag) and
+        elif (re.match(r'^[^C]...1', tag) and
                 (not re.match(r'^NN..1', prev_tag) or personal_names) and
                 form not in ['římská'] and
-                case != '1'):
+                (case != '1' or number)):
             # change the case in the tag, allow all variants
             new_tag = re.sub(r'^(....)1(.*).$', r'\g<1>' + case + r'\g<2>?', tag)
-            # -ice: test both sg. and pl. versions
+            if gender:
+                new_tag = new_tag[0:2] + gender + new_tag[3:]
+            if number:
+                new_tag = new_tag[0:3] + number + new_tag[4:]
+            # use both sg. and pl. numbers (by default for -ice)
             if (form.endswith('ice') and form[0] == form[0].upper() and
                     not re.match(r'(nemocnice|ulice|vrátnice)', form, re.IGNORECASE)):
-                new_tag = re.sub(r'^(...)S', r'\1[SP]', new_tag)
+                new_tag = new_tag[0:3] + '?' + new_tag[4:]
+        if new_tag:
             # try inflecting, return empty list if not found in the dictionary
+            # + filter out colloquial forms
             capitalized = form[0] == form[0].upper()
-            new_forms = self.generate(lemma, new_tag, capitalized)
-            return new_forms
+            new_forms_tags = [(form, tag) for (form, tag) in self.generate(lemma, new_tag, capitalized)
+                              if not re.match(r'.*[3467]$', tag)]
+            return new_forms_tags
         else:
-            return [form]
+            return [(form, tag)]
 
 
 def trunc_lemma(lemma):
