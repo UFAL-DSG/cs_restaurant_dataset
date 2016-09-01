@@ -19,15 +19,15 @@
             "Kočárem z Vídně\tNNIS7-----A----"
         ], 
         "Ananta": [
-            "Ananta\tNNFS1-----A----"
-            "Ananty\tNNFS2-----A----"
-            "Anantě\tNNFS3-----A----"
-            "Anantu\tNNFS4-----A----"
-            "Anantě\tNNFS6-----A----"
+            "Ananta\tNNFS1-----A----",
+            "Ananty\tNNFS2-----A----",
+            "Anantě\tNNFS3-----A----",
+            "Anantu\tNNFS4-----A----",
+            "Anantě\tNNFS6-----A----",
             "Anantou\tNNFS7-----A----"
         ], 
         "Café Kampus": [
-            "Café Kampus\tNNNXX-----A----", 
+            "Café Kampus\tNNNXX-----A----"
         ], 
         "Café Savoy": [
             "Café Savoy\tNNNXX-----A----", 
@@ -55,19 +55,19 @@
             "Green Spiritem\tNNIS7-----A----"
         ], 
         "Ferdinanda": [
-            "Ferdinanda\tNNFS1-----A----"
-            "Ferdinandy\tNNFS2-----A----"
-            "Ferdinandě\tNNFS3-----A----"
-            "Ferdinandu\tNNFS4-----A----"
-            "Ferdinandě\tNNFS6-----A----"
+            "Ferdinanda\tNNFS1-----A----",
+            "Ferdinandy\tNNFS2-----A----",
+            "Ferdinandě\tNNFS3-----A----",
+            "Ferdinandu\tNNFS4-----A----",
+            "Ferdinandě\tNNFS6-----A----",
             "Ferdinandou\tNNFS7-----A----"
         ], 
         "Místo": [
-            "Místo\tNNNS1-----A----"
-            "Místa\tNNNS2-----A----"
-            "Místu\tNNNS3-----A----"
-            "Místo\tNNNS4-----A----"
-            "Místě\tNNNS6-----A----"
+            "Místo\tNNNS1-----A----",
+            "Místa\tNNNS2-----A----",
+            "Místu\tNNNS3-----A----",
+            "Místo\tNNNS4-----A----",
+            "Místě\tNNNS6-----A----",
             "Místem\tNNNS7-----A----"
         ], 
         "U Konšelů": [
@@ -132,7 +132,7 @@
             "Vinohradům\tNNIP3-----A----", 
             "Vinohrady\tNNIP4-----A----", 
             "Vinohradech\tNNIP6-----A----", 
-            "Vinohrady\tNNIP7-----A----", 
+            "Vinohrady\tNNIP7-----A----"
         ], 
         "Staré Město": [
             "Staré Město\tNNNS1-----A----", 
@@ -506,7 +506,7 @@
             "televiznímu vysílači\tNNIS3-----A----", 
             "televizní vysílač\tNNIS4-----A----", 
             "televizním vysílači\tNNIS6-----A----", 
-            "televizním vysílačem\tNNIS7-----A----", 
+            "televizním vysílačem\tNNIS7-----A----"
         ], 
         "Prague Castle": [
             "Pražský hrad\tNNIS1-----A----", 
