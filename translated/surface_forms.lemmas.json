@@ -1,0 +1,210 @@
+{
+    "area":{
+        "Dejvice":[
+            "dejvice"
+        ],
+        "Hradčany":[
+            "hradčany"
+        ],
+        "Karlín":[
+            "karlín"
+        ],
+        "Malá Strana":[
+            "malý strana"
+        ],
+        "Nusle":[
+            "nusle"
+        ],
+        "Smíchov":[
+            "smíchov"
+        ],
+        "Staré Město":[
+            "starý město"
+        ],
+        "Vinohrady":[
+            "vinohrady",
+            "vinohrad"
+        ],
+        "Žižkov":[
+            "žižkov"
+        ]
+    },
+    "food":{
+        "American":[
+            "americký",
+            "americky"
+        ],
+        "Asian":[
+            "asijský",
+            "asijsky"
+        ],
+        "Chinese":[
+            "čínský",
+            "čínsky"
+        ],
+        "Czech":[
+            "český",
+            "česky"
+        ],
+        "French":[
+            "francouzský",
+            "francouzsky"
+        ],
+        "German":[
+            "německý",
+            "německy"
+        ],
+        "Indian":[
+            "indický",
+            "indicky"
+        ],
+        "Italian":[
+            "italský",
+            "italsky"
+        ],
+        "Mexican":[
+            "mexický",
+            "mexicky"
+        ],
+        "Turkish":[
+            "turecký",
+            "turecky"
+        ],
+        "vegetarian":[
+            "vegetariánský",
+            "vegetariánsky"
+        ]
+    },
+    "name":{
+        "Ananta":[
+            "anant",
+            "ananta"
+        ],
+        "BarBar":[
+            "barbar",
+            "barbara"
+        ],
+        "Baráčnická rychta":[
+            "baráčnický rychta"
+        ],
+        "Café Kampus":[
+            "café kampus"
+        ],
+        "Café Savoy":[
+            "café savoy",
+            "kavárna savoy",
+            "kavárna savoa",
+            "café savoa"
+        ],
+        "Ferdinanda":[
+            "ferdinand",
+            "ferdinanda"
+        ],
+        "Green Spirit":[
+            "green spirit",
+            "green spiritu",
+            "green spiritus",
+            "green spiri"
+        ],
+        "Kočár z Vídně":[
+            "kočár z vídeň"
+        ],
+        "Místo":[
+            "místo"
+        ],
+        "Pivo & Basilico":[
+            "pivo & basilico",
+            "pivo & basilica",
+            "pivo & basilic",
+            "pivo & basilicu"
+        ],
+        "U Konšelů":[
+            "u konšel"
+        ],
+        "U Tučňáků":[
+            "u tučňák"
+        ],
+        "Švejk Restaurant":[
+            "švejk restaurant",
+            "restaurace švejk"
+        ]
+    },
+    "near":{
+        "Charles Bridge":[
+            "karlův most"
+        ],
+        "Old Town Square":[
+            "staroměstský náměstí"
+        ],
+        "Petřín Tower":[
+            "petřínský věž",
+            "petřínský rozhledna"
+        ],
+        "Powder Tower":[
+            "prašný brána"
+        ],
+        "Prague Castle":[
+            "pražský hrad"
+        ],
+        "Stromovka":[
+            "stromovka"
+        ],
+        "TV Tower":[
+            "žižkovský televizní vysílač",
+            "žižkovský televizní věž",
+            "televizní věž",
+            "žižkovský věž",
+            "žižkovský vysílač",
+            "televizní vysílač"
+        ],
+        "Wenceslas Square":[
+            "václavský náměstí"
+        ]
+    },
+    "street":{
+        "Kaprova":[
+            "kaprův",
+            "kaprově"
+        ],
+        "Karmelitská":[
+            "karmelitský"
+        ],
+        "Malostranské náměstí":[
+            "malostranský náměstí"
+        ],
+        "Náprstkova":[
+            "náprstkův",
+            "náprstkově"
+        ],
+        "Národní":[
+            "národní"
+        ],
+        "Tržiště":[
+            "tržiště"
+        ],
+        "Újezd":[
+            "újezd"
+        ],
+        "Štefánikova":[
+            "štefánikův"
+        ],
+        "Žatecká":[
+            "žatecký"
+        ]
+    },
+    "good_for_meal":{
+        "breakfast": ["snídaně", "snídat", "snídaňový", "nasnídat", "posnídat"],
+        "brunch": ["pozdní snídaně", "brunch", "brunchový", "dát brunch"],
+        "lunch": ["oběd", "obědový", "polední", "obědvat", "naobědvat", "poobědvat", "poobědvání"],
+        "dinner": ["večeře", "večerní", "večeřet", "navečeřet", "povečeřet"]
+    },
+    "price_range":{
+        "cheap": ["levný", "levně", "nízký", "mírný", "levno"],
+        "moderate": ["středně drahý", "středně vysoký", "cenově přijatelný", "kolem průměr", "cenově dostupný", "střední", "prostřední", "normální", "běžný", "průměrný", "přijatelný", "dostupný", "středně"],
+        "expensive": ["drahý", "luxusní", "draze", "vysoký", "draho"]
+    },
+    "price":{
+        "between _ and _ Kč": ["mezi _ a _ kč", "mezi _ až _ kč", "od _ do _ kč", "_ až _ kč"],
+        "_ Kč": ["_ kč"]
+    }
+}
