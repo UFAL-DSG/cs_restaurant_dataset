@@ -1175,7 +1175,7 @@ Na shledanou.
 Dobrý den, vítejte v restauračním informačním systému. Můžete vyhledávat restaurace podle lokality, cenové kategorie nebo typu jídla. Jak Vám mohu pomoci?
 Na co máte chuť?
 U Tučňáků se soustředí na francouzskou kuchyni.
-Poblíž Vinohradů se nachází dobrá restaurace jménem Café Kampus.
+Poblíž Vinohrad se nachází dobrá restaurace jménem Café Kampus.
 Je mi líto, ale na Smíchově není žádná čínská restaurace.
 Na slyšenou příště.
 Dobrý den, vítejte v restauračním informačním systému. Můžete vyhledávat restaurace podle lokality, cenové kategorie nebo typu jídla. Jak Vám mohu pomoci?
@@ -1654,7 +1654,7 @@ Dobrý den, vítejte v restauračním informačním systému. Můžete vyhledáv
 Nenašla jsem žádnou mexickou restauraci ve Stromovce.
 Nenašla jsem žádné italské restaurace poblíž Staroměstského náměstí.
 Dobrý den, vítejte v restauračním informačním systému. Můžete vyhledávat restaurace podle lokality, cenové kategorie nebo typu jídla. Jak Vám mohu pomoci?
-U Konšelů je středně drahá restaurace podávající obědy, kde je povolen vstup s dětmi.
+U Konšelů je drahá restaurace podávající obědy, kde je povolen vstup s dětmi.
 Děkuji za zavolání. Na shledanou.
 Dobrý den, vítejte v našem dialogovém systému. Můžete se ptát na restaurace podle oblasti, cenové kategorie nebo typu jídla. Jak vám mohu pomoci?
 Ferdinanda je další levnou možností poblíž Petřínské věže.
@@ -5655,7 +5655,7 @@ Ananta je vhodná pro děti.
 Na shledanou. Omlouvám se.
 Dobrý den, vítejte v restauračním informačním systému. Můžete vyhledávat restaurace podle lokality, cenové kategorie nebo typu jídla. Jak Vám mohu pomoci?
 Jakou cenovou kategorii si představujete?
-Restaurace U Tučňáků je cenově docela průmerná.
+Restaurace U Tučňáků je cenově docela průměrná.
 Doporučuji Café Savoy.
 Ferdinanda je cenově dostupná a poblíž Prašné Brány nebo Staroměstského náměstí.
 Adresa restaurace U Tučňáků je ulice Malostranské náměstí 20.
@@ -6153,7 +6153,7 @@ Jaký druh jídla chcete?
 Jaký typ jídla byste chtěli?
 Děkuji, přeji krásný den.
 Dobrý den, vítejte v restauračním informačním systému. Můžete vyhledávat restaurace podle lokality, cenové kategorie nebo typu jídla. Jak Vám mohu pomoci?
-BarBar je stedně drahá restaurace blízko Staroměstského náměstí, která není vhodná pro děti.
+BarBar je středně drahá restaurace blízko Staroměstského náměstí, která není vhodná pro děti.
 Café Savoy je příjemná restaurace.
 Do U Konšelů můžete zavolat na telefonu 242817033.
 Pivo & Basilico je příjemná restaurace s asijskou kuchyní.
