@@ -935,7 +935,7 @@
             "_ _\t_ _\tC=-------------"
         ]
     },
-    "price {
+    "price_range": {
         "moderate": [
             "středně drahý\tstředně drahý\tAAMS1----1A----",
             "středně drahý\tstředně drahý\tAAIS1----1A----",
@@ -1957,7 +1957,7 @@
             "draho\tdraho\tDb-------------"
         ]
     },
-    "good {
+    "good_for_meal": {
         "lunch": [
             "oběd\toběd\tNNIS1-----A----",
             "oběd\tobědy\tNNIP1-----A----",
