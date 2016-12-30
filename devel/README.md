@@ -1,3 +1,11 @@
+Dataset translation process
+===========================
+
+* Required:
+    * Python 2.7
+    * [KenLM](http://kheafield.com/code/kenlm/) with Python support
+    * [Morphodita 1.9+](https://github.com/ufal/morphodita) with Python support
+    * [recordclass](https://pypi.python.org/pypi/recordclass) Python module
 
 ''Localize'' the data to prepare for translations
 -----------------------------------------------
@@ -5,6 +13,17 @@
 ```
     ./localize.py source/all-text.txt source/all-abst.txt source/all-das.txt source/all-loc.txt source/all-da_loc.txt
 ```
+
+Translate localized data
+------------------------
+
+* This must be done manually.
+* Add sentence IDs `<s id="XX"></s>` to preserve connection to DAs.
+* Also, a list of surface forms must be prepared for the localized slot values (`surface_forms.json`).
+* The `delexicalize.py` script checks whether all information from the DA is present in the translation
+    * If values are not found, they must be either added to `surface_forms.json` according to the
+      translated sentence, or the translated sentence must be fixed.
+
 
 Build delexicalized lowercased language model
 ---------------------------------------------
@@ -28,13 +47,17 @@ Build delexicalized lowercased language model
 * Use KenLM:
 
 ```
-    ~/work/tools/kenlm/build/bin/lmplz -o 5 -S 15G -T /tmp/ < delex-lemmas.lc.tok.txt > delex-lm.arpa
-    ~/work/tools/kenlm/build/bin/build_binary delex-lm.arpa delex-lm.bin
+   /path/to/kenlm/build/bin/lmplz -o 5 -S 15G -T /tmp/ < delex-lemmas.lc.tok.txt > delex-lm.arpa
+   /path/to/kenlm/build/bin/build_binary delex-lm.arpa delex-lm.bin
 ```    
 
 
 Expand translated data (with different lexicalizations)
 -------------------------------------------------------
+
+* Use Morphodita for tagging, with a handcrafted list of overrides (`tagger_overrides.json`).
+* Use the language model built in the previous step.
+    * KenLM Python support is required.
 
 ```    
     ./expand.py -l translated/delex-lm.bin \
@@ -46,6 +69,15 @@ Expand translated data (with different lexicalizations)
         translated/expand-texts.txt translated/expand-delex_texts.txt translated/expand-das.txt translated/expand-delex_das.txt
 ```
 
-* The resulting data must be checked manually (no agreement checking in the code)
-* Data to be checked are marked
+* The resulting data must be checked manually (no agreement checking in the code).
+    * Data to be checked are marked with _CHECK_ at the start of the line.
+* The delexicalized versions produced by the script contain a rough information about the 
+  syntactic form; this is too inaccurate and has been removed from the final version.
+
+Build final CSV & JSON files
+----------------------------
+
+```
+    ./build_set.py translated
+```
 
