@@ -77,7 +77,12 @@ Expand translated data (with different lexicalizations)
 Build final CSV & JSON files
 ----------------------------
 
-```
-    ./build_set.py translated
-```
+* Ignore the `hello()` lines, they are repetitive and handcrafted anyway
+    * They actually haven't been used by Wen et al. in the original experiments, although they are
+      present in their set.
 
+```
+    ./build_set.py --skip-hello \
+        translated/expand-{texts,delex_texts,das,delex_das}.txt \
+        ../dataset
+```
