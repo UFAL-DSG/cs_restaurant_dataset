@@ -18,7 +18,10 @@ Translate localized data
 ------------------------
 
 * This must be done manually.
-* Add sentence IDs `<s id="XX"></s>` to preserve connection to DAs.
+* Add sentence IDs `<s id="XX"></s>` to preserve connection to DAs:
+```
+    cat all-loc.txt | perl -e 'my $ctr = 0; while (my $line = <>){ chomp $line; print "<s id=$ctr>$line</s>\n"; $ctr++ }' > all-loc.num.txt
+```
 * Also, a list of surface forms must be prepared for the localized slot values (`surface_forms.json`).
 * The `delexicalize.py` script checks whether all information from the DA is present in the translation
     * If values are not found, they must be either added to `surface_forms.json` according to the

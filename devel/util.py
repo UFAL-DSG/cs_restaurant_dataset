@@ -162,8 +162,8 @@ class Analyzer(object):
         self.__tokens_buf = TokenRanges()
         self.__lemmas_buf = TaggedLemmas()
 
-    def analyze(self, stop_text):
-        self.__tokenizer.setText(stop_text)
+    def analyze(self, text):
+        self.__tokenizer.setText(text)
         out = []
         while self.__tokenizer.nextSentence(self.__forms_buf, self.__tokens_buf):
             self.__tagger.tag(self.__forms_buf, self.__lemmas_buf)
