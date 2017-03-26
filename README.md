@@ -8,7 +8,7 @@ Czech restaurant information dataset for NLG
 
 This is a dataset for NLG in task-oriented spoken dialogue systems with Czech as the target 
 language. It originated as a translation of the [English San Francisco Restaurants dataset by
-Wen et al. (2015).](https://www.repository.cam.ac.uk/handle/1810/251304).
+Wen et al. (2015).](https://www.repository.cam.ac.uk/handle/1810/251304)
 
 It includes input dialogue acts and the corresponding output natural language paraphrases in Czech.
 Since the dataset is intended for RNN-based NLG systems using delexicalization, inflection tables
