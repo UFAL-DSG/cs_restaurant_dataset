@@ -27,6 +27,8 @@ A more detailed description of the dataset and a publication is in the works.
 Dataset format
 --------------
 
+### The NLG data ###
+
 The dataset is released in CSV and JSON formats (`dataset.csv`, `dataset.json`); the contents are
 identical. Both files use the UTF-8 encoding.
 
@@ -37,7 +39,24 @@ The dataset contains 5192 instances. Each instance has the following properties:
 * `text` -- the output text
 * `delex_text` -- the output text, delexicalized
 
-The order of the instances is random to allow a simple training/development/test data split.
+The order of the instances is random to allow a simple training/development/test data split. We recommend 
+a 3:1:1 split for training, development, and test data in the order presented in the dataset (3116, 1038,
+1038 instances, respectively).
+
+### Additional morphology data ###
+
+The JSON file `surface_forms.json` includes information about morphological inflection forms for 
+all slot values contained within the dataset. The JSON hierarchy is the following:
+
+* dictionary slot (e.g., `name`, `pricerange`) -> all data associated with the slot
+  * dictionary value (e.g., `Café Savoy`, `Chinese`) -> all possible surface forms associated with it
+    * list of string values in the format lemma - form - tag (tab-separated, e.g. `Karlín\tKarlína\tNNIS2-----A----`)
+
+Morphological tags use [Hajič's Czech positional tagset](https://ufal.mff.cuni.cz/pdt/Morphology_and_Tagging/Doc/hmptagqr.html).
+Multi-word values are treated as atomic, i.e., they only receive one morphological tag each, typically belonging
+to the main word of the phrase (usually a noun).
+
+A `_` wildcard is used to replace numeric values.
 
 ### The domain ###
 
