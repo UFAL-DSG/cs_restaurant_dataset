@@ -3,7 +3,7 @@ Czech restaurant information dataset for NLG
 
 * **Authors**: Ondřej Dušek, Filip Jurčíček, Josef Dvořák, Petra Grycová, Matěj Hejda, Jana Olivová, Michal Starý, Eva Štichová
 * **License**: [Creative Commons 4.0 BY-SA](https://creativecommons.org/licenses/by-sa/4.0/)
-* **LINDAT release**: TBD
+* LINDAT release: <http://hdl.handle.net/11234/1-2123>
 * **Development website**: <https://github.com/UFAL-DSG/cs_restaurant_dataset>
 
 This is a dataset for NLG in task-oriented spoken dialogue systems with Czech as the target 
@@ -23,6 +23,7 @@ to any real restaurant database, but most of the proper names used included to b
 * Expanding the translated data to original size by relexicalizing with different slot values + manual checks
 
 A more detailed description of the dataset and a publication is in the works.
+
 
 Dataset format
 --------------
@@ -46,7 +47,7 @@ a 3:1:1 split for training, development, and test data in the order presented in
 ### Additional morphology data ###
 
 The JSON file `surface_forms.json` includes information about morphological inflection forms for 
-all slot values contained within the dataset. The JSON hierarchy is the following:
+all slot values contained within the dataset. The JSON has the following hierarchical structure:
 
 * dictionary slot (e.g., `name`, `pricerange`) -> all data associated with the slot
   * dictionary value (e.g., `Café Savoy`, `Chinese`) -> all possible surface forms associated with it
