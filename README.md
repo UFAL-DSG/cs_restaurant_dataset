@@ -22,7 +22,12 @@ to any real restaurant database, but most of the proper names used included to b
 * Automatic checks for the presence of slot values
 * Expanding the translated data to original size by relexicalizing with different slot values + manual checks
 
-A more detailed description of the dataset and a publication is in the works.
+Details & Citing
+----------------
+
+To find out more details and cite the dataset if you use it, use the following paper (link coming soon):
+
+Ondřej Dušek and Filip Jurčíček (2019): Neural Generation for Czech: Data and Baselines. In _INLG_, Tokyo, Japan.
 
 
 Dataset format
