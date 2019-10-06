@@ -2,10 +2,11 @@ Dataset translation process
 ===========================
 
 * Required:
-    * Python 2.7
+    * Python 2.7, Python 3.6 (for the last step)
     * [KenLM](http://kheafield.com/code/kenlm/) with Python support
     * [Morphodita 1.9+](https://github.com/ufal/morphodita) with Python support
     * [recordclass](https://pypi.python.org/pypi/recordclass) Python module
+    * [TGen](https://github.com/UFAL-DSG/tgen)
 
 ''Localize'' the data to prepare for translations
 -----------------------------------------------
@@ -37,7 +38,7 @@ Build delexicalized lowercased language model
     cat translations.txt | sed 's/^<s id=[0-9]\+>//;s/<\/s>$//' > translations.plain.txt
     ./delexicalize.py \
         -s name,area,address,phone,good_for_meal,near,food,price_range,count,price,postcode 
-        -f translated/surface_forms.json \
+        -f ../surface_forms.json \
         -t czech-morfflex-pdt-160310.tagger \
         -l translated/translations.plain.txt \
         source/all-da_loc.txt translated/delex-lemmas.txt
@@ -65,7 +66,7 @@ Expand translated data (with different lexicalizations)
 ```    
     ./expand.py -l translated/delex-lm.bin \
         -s name,area,address,phone,good_for_meal,near,food,price_range,count,price,postcode \
-        -f translated/surface_forms.json \
+        -f ../surface_forms.json \
         -t czech-morfflex-pdt-160310.tagger \
         -o translated/tagger_overrides.json \
         source/all-das.txt source/all-da_loc.txt translated/translations.plain.txt \
@@ -87,5 +88,21 @@ Build final CSV & JSON files
 ```
     ./build_set.py --skip-hello \
         translated/expand-{texts,delex_texts,das,delex_das}.txt \
-        ../dataset
+        dataset
 ```
+
+Split train/dev/test
+--------------------
+
+* The split needs to contain different DAs in different sections, this script ensures it (see main [README](../README.md) for details). 
+    It also delexicalizes the data once more, to account for changes after expansions.
+
+```
+    ./split_set.py -s 3:1:1 \
+        -a name,area,address,phone,good_for_meal,near,food,price_range,count,price,postcode \
+        czech-morfflex-pdt-160310.tagger \
+        ../surface_forms.json dataset.json \
+        train,devel,test
+    mv train.json devel.json test.json ..
+```
+

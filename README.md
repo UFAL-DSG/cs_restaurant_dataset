@@ -30,19 +30,22 @@ Dataset format
 
 ### The NLG data ###
 
-The dataset is released in CSV and JSON formats (`dataset.csv`, `dataset.json`); the contents are
-identical. Both files use the UTF-8 encoding.
+The dataset is released in CSV and JSON formats (`{train,devel,test}.csv`, `{train,devel,test}.json`); the contents are
+identical. All files use the UTF-8 encoding.
 
-The dataset contains 5192 instances. Each instance has the following properties:
+The dataset contains 5192 instances in total. Each instance has the following properties:
 
 * `da` -- the input dialogue act
 * `delex_da` -- the input dialogue act, delexicalized
 * `text` -- the output text
 * `delex_text` -- the output text, delexicalized
 
-The order of the instances is random to allow a simple training/development/test data split. We recommend 
-a 3:1:1 split for training, development, and test data in the order presented in the dataset (3116, 1038,
-1038 instances, respectively).
+The order of the instances is random; the split is roughly 3:1:1, ensuring that the different sections
+don't share the same DAs (so the generators need to generalize to unseen DAs), but they share as many
+generic different DA types as possible (e.g., `confirm`, `inform_only_match` etc.). DA types that only 
+have a single corresponding DA (e.g., `bye()`) are included in the training set.
+
+The training, development, and test set contain 3569, 781, and 842 instances, respectively.
 
 ### Additional morphology data ###
 
