@@ -25,9 +25,9 @@ to any real restaurant database, but most of the proper names used included to b
 Details & Citing
 ----------------
 
-To find out more details and cite the dataset if you use it, use the following paper (link coming soon):
+To find out more details and cite the dataset if you use it, use the following paper:
 
-Ondřej Dušek and Filip Jurčíček (2019): Neural Generation for Czech: Data and Baselines. In _INLG_, Tokyo, Japan.
+Ondřej Dušek and Filip Jurčíček (2019): [Neural Generation for Czech: Data and Baselines](https://www.aclweb.org/anthology/W19-8670/). In _INLG_, Tokyo, Japan.
 
 
 Dataset format
