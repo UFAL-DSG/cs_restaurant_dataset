@@ -99,7 +99,7 @@ The **act types used** in this dataset are:
 * `goodbye` -- goodbye
 
 **Slots used** in this dataset are:
-* `name` -- restaurant name
+* `name` -- restaurant name* `count` -- number of restaurants matching criteria
 * `type` -- venue type (the only value used here is `restaurant`)
 * `price_range` -- restaurant price range (`cheap`, `moderate`, `expensive`)
 * `price` -- the actual meal price (or price range) in Czech Crowns (Kč)
