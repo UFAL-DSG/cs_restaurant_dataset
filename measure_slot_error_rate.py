@@ -338,13 +338,23 @@ def evaluate(surface_forms, das, sys):
 
 
 if __name__ == '__main__':
-    logging.getLogger().setLevel(logging.DEBUG)
+    
 
     ap = ArgumentParser(description='Slot Error Rate evaluation for Czech restaurant information dataset')
     ap.add_argument('surface_forms_file', type=str, help='JSON file containing the surface forms for all slot values.')
     ap.add_argument('ref_file', type=str, help='References CSV file containing the dialogue acts (DAs) in the first column.')
     ap.add_argument('--sys_file', type=str, help='System output file to evaluate (text file with one output per line).')
+    ap.add_argument('-v', '--verbosity', action="count", help="increase output verbosity (e.g., -vv is more than -v)")
     args = ap.parse_args()
+
+    if args.verbosity == 3:
+        logging.getLogger().setLevel(logging.DEBUG)
+    if args.verbosity == 2:
+        logging.getLogger().setLevel(logging.INFO)
+    if args.verbosity == 1:
+        logging.getLogger().setLevel(logging.WARNING)
+    if args.verbosity == 0:
+        logging.getLogger().setLevel(logging.ERROR)
 
     surface_forms, das, sys = load_data(args.surface_forms_file, args.ref_file, args.sys_file)
 
