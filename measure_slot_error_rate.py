@@ -145,10 +145,10 @@ def evaluate(surface_forms, das, sys):
         else:
             return False
     
-    def regex_match(sentence, regex):
+    def regex_match(sentence, regex, group=0):
         matches = re.search(regex, sentence, re.IGNORECASE)
         if matches:
-            return matches.group(0)
+            return matches.group(group)
         else:
             return False
     
@@ -168,30 +168,31 @@ def evaluate(surface_forms, das, sys):
                     return test_address
         return False
     
-    # def find_kids_negation(sys_line):
-    #     match = regex_match(sys_line, r"\bne\w* (\w+ ){0,5}dět\w*")
-    #     if not match:
-    #         match = regex_match(sys_line, r"dět\w* (\w+ ){0,2}ne\w+")
-    #     if not match:
-    #         match = regex_match(sys_line, r"(zakáz\w*|zákaz\w*) (\w+ ){0,5}dět\w*")
-    #     if not match:
-    #         match = regex_match(sys_line, r"dět\w* (\w+ ){0,5}(zakáz\w*|zákaz\w*)")
-    #     if not match:
-    #         match = regex_match(sys_line, r"bez (\w+ ){0,3}dět\w*")
-    #     return match
+    def find_kids_negation(sys_line):
+        match = regex_match(sys_line, r"\b(ne\w*) (?:\w+ ){0,4}dět\w*", group=1)
+        if not match:
+            # (?!a ) is there because of "... a ..." conjunction
+            match = regex_match(sys_line, r"dět\w* (?!a )(?:\w+ ){0,2}(ne\w+)", group=1)
+        if not match:
+            match = regex_match(sys_line, r"(zakáz\w*|zákaz\w*) (?:\w+ ){0,5}dět\w*", group=1)
+        if not match:
+            match = regex_match(sys_line, r"dět\w* (?:\w+ ){0,5}(zakáz\w*|zákaz\w*)", group=1)
+        if not match:
+            match = regex_match(sys_line, r"(bez) (?:\w+ ){0,3}dět\w*", group=1)
+        return match
     
-    def validate_slot_match(sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error):
+    def validate_slot_match(match_correct, sys_line, sys_line_orig, remove_substring, value, slot, num_valid_slots_with_value, num_missing_slot_value_error):
         num_valid_slots_with_value += 1
-        if match:
-            sys_line = remove_from_sentence(sys_line, match)
-        else:
+        if remove_substring:
+            sys_line = remove_from_sentence(sys_line, remove_substring)
+
+        if not match_correct:
             num_missing_slot_value_error += 1
             logging.info(f"Slot Error: didn't find match for '{value}' for slot '{slot}' in sentence '{sys_line_orig}'")
 
         return sys_line, num_valid_slots_with_value, num_missing_slot_value_error
 
     surface_forms = {slot: {lemma: [form.split("\t")[1] for form in forms] for lemma, forms in values.items()} for slot, values in surface_forms.items()}
-    # print(surface_forms)
     problems = 0
     num_valid_slots_with_value = 0
     num_missing_slot_value_error = 0
@@ -201,12 +202,6 @@ def evaluate(surface_forms, das, sys):
         sys_line = sys_line_orig
         da = parse_da(da_string)
         attributes = da["attributes"]
-
-        # if "kids_allowed" in attributes:
-        #     pass
-        #     # logging.debug(f"{da_string} -> {sys_line}")
-        # else:
-        #     continue
 
         # num_slots_with_value = sum(1 if value else 0 for _, value in da["attributes"].items())
 
@@ -220,53 +215,55 @@ def evaluate(surface_forms, das, sys):
             if slot == "type":
                 continue
             elif slot == "kids_allowed":
-                logging.debug(f"We cannot handle the slot kids_allowed yet")
-                continue
-                # num_valid_slots_with_value += 1
+                # the sentence needs to contain the word kids
+                match_kids_slot = find_surface_form(sys_line, ["děti", "dětí", "dětem", "dětmi"])
+                if not match_kids_slot:
+                    num_missing_slot_value_error += 1
+                    logging.info(f"Slot Error: didn't find match for '{' or '.join(values)}' for slot '{slot}' in sentence '{sys_line_orig}'")
+                    continue
 
-                # # the sentence needs to contain the word kids
-                # match_kids_slot = find_surface_form(sys_line, ["děti", "dětí", "dětem", "dětmi"])
-                # if not match_kids_slot:
-                #     num_missing_slot_value_error += 1
-                #     logging.info(f"Slot Error: didn't find match for 'děti' for slot '{slot}' in sentence '{sys_line_orig}'")
-                #     continue
+                # For two examples in the train set the value is missing but =yes is assumed
+                if len(values) == 0:
+                    values = ["yes"]
 
-                # # For two examples in the train set the value is missing but =yes is assumed
-                # if len(values) == 0:
-                #     values = ["yes"]
+                if len(values) == 1:
+                    value = values[0]
+                    if value == "yes":
+                        match = find_kids_negation(sys_line)
+                        sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(not match, sys_line, sys_line_orig, False, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
+                    elif value == "no":
+                        match = find_kids_negation(sys_line)
+                        sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(match, sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
+                    elif value == "dont_care":
+                        logging.debug(f"We cannot handle kids_allowed='dont_care'")
+                    elif value == "none":
+                        logging.debug(f"We cannot handle kids_allowed='none'")
+                    else:
+                        assert False, f"Invalid value {value} for kids_allowed"
 
-                # if len(values) == 1:
-                #     value = values[0]
-                #     if value == "yes":
-                #         match = find_kids_negation(sys_line)
-                #         if match:
-                #             logging.debug(f"!!! '{match}'\t'{sys_line}'\t{da_string}")
-                #     elif value == "no":
-                #         match = find_kids_negation(sys_line)
-                #         if not match:
-                #             logging.debug(f"'{match}'\t'{sys_line}'\t{da_string}")
-                #     elif value == "dont_care":
-                #         logging.debug(f"We cannot handle kids_allowed='dont_care' yet")
-                #     elif value == "none":
-                #         logging.debug(f"We cannot handle kids_allowed='none' yet")
-                #     else:
-                #         assert False, f"Invalid value {value} for kids_allowed"
+                if len(values) == 2:
+                    if set(values) == {"yes", "no"}:
+                        logging.debug(f"We cannot handle kids_allowed='yes or no'")
+                    elif set(values) == {"dont_care", "yes"}:
+                        logging.debug(f"We cannot handle kids_allowed='yes',kids_allowed='dont_care'")
+                    else:
+                        assert False, f"Invalid value {values} for kids_allowed"
+                
+                # Warning, this is maybe dangerous - but we remove all matched "děti" string
+                while match_kids_slot:
+                    sys_line = remove_from_sentence(sys_line, match_kids_slot)
+                    match_kids_slot = find_surface_form(sys_line, ["děti", "dětí", "dětem", "dětmi"])
+                # This is because we don't want to trigger the "additional slot" error 
+                # for the slot values we cannot handle
 
-                # if len(values) == 2:
-                #     if set(values) == {"yes", "no"}:
-                #         logging.debug(f"We cannot handle kids_allowed='yes or no' yet")
-                #     elif set(values) == {"dont_care", "yes"}:
-                #         logging.debug(f"We cannot handle kids_allowed='yes or no' yet")
-                #     else:
-                #         assert False, f"Invalid value {values} for kids_allowed"
             elif slot in ["phone", "count", "postcode"]:
                 for value in values:
                     match = exact_match(sys_line, value)
-                    sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
+                    sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(match, sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
             elif slot == "address":
                 for value in values:
                     match = match_address(value, sys_line, surface_forms["street"])
-                    sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
+                    sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(match, sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
             elif slot == "price":
                 for value in values:
                     if "between" in value:
@@ -284,12 +281,12 @@ def evaluate(surface_forms, das, sys):
                     else:
                         match = exact_match(sys_line, value)
                     
-                    sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
+                    sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(match, sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
             elif slot in surface_forms:
                 for value in values:
                     if value in surface_forms[slot]:
                         match = find_surface_form(sys_line, surface_forms[slot][value])
-                        sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
+                        sys_line, num_valid_slots_with_value, num_missing_slot_value_error = validate_slot_match(match, sys_line, sys_line_orig, match, value, slot, num_valid_slots_with_value, num_missing_slot_value_error)
                     else:
                         # TODO: handle dont_care
                         # if value == "dont_care":
@@ -320,17 +317,18 @@ def evaluate(surface_forms, das, sys):
                     # print(sys_line, forms)
 
         # Find additional kids_allowed slot
-        # TODO: activate
-        # match_kids_slot = find_surface_form(sys_line, ["děti", "dětí", "dětem", "dětmi"])
-        # if match_kids_slot:
-        #     num_additional_slot_value_error += 1
-        #     logging.info(f"Slot Error: found additional value '{match_kids_slot}' for slot 'kids_allowed' in sentence '{sys_line_orig}'. DA is '{da_string}'")
+        match_kids_slot = find_surface_form(sys_line, ["děti", "dětí", "dětem", "dětmi"])
+        if match_kids_slot:
+            logging.info(f"Slot Error: found substring '{match_kids_slot}' implying slot 'kids_allowed' in sentence '{sys_line_orig}'. DA is '{da_string}'")
+            num_additional_slot_value_error += 1
 
     print("total number of DAs", len(das))
     print("problems", problems)
+    errors = num_missing_slot_value_error+num_additional_slot_value_error
+    print("errors", errors)
     print("valid slots", num_valid_slots_with_value)
     if num_valid_slots_with_value:
-        SER = (num_missing_slot_value_error+num_additional_slot_value_error) / num_valid_slots_with_value
+        SER = errors / num_valid_slots_with_value
         print("SER", SER)
     else:
         logging.warning(f"Didn't find any valid slots")
