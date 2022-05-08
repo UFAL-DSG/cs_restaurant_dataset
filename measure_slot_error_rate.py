@@ -153,11 +153,14 @@ def evaluate(surface_forms, das, sys):
             return False
     
     def remove_from_sentence(sentence, value):
-        new_sentence = "".join(sentence.split(value))
-        # Replace multiple spaces with one
-        new_sentence = re.sub(' +',' ',new_sentence)
-        assert new_sentence != sentence, f"didn't find match for value {value} in sentence {sentence}"
-        return new_sentence
+        if value:
+            new_sentence = "".join(sentence.split(value))
+            # Replace multiple spaces with one
+            new_sentence = re.sub(' +',' ',new_sentence)
+            assert new_sentence != sentence, f"didn't find match for value {value} in sentence {sentence}"
+            return new_sentence
+        else:
+            return sentence
     
     def match_address(street_value, sentence, forms):
         street_name, street_num = street_value.rsplit(" ", 1)
@@ -181,16 +184,16 @@ def evaluate(surface_forms, das, sys):
             match = regex_match(sys_line, r"(bez) (?:\w+ ){0,3}dět\w*", group=1)
         return match
     
-    def validate_slot_match(is_valid, sys_line, sys_line_orig, remove_substring, value, slot, num_valid_slot_values, num_missing_slot_value_error):
+    def count_slot_match(is_valid):
+        nonlocal num_valid_slot_values, num_missing_slot_value_error
         num_valid_slot_values += 1
-        if remove_substring:
-            sys_line = remove_from_sentence(sys_line, remove_substring)
-
         if not is_valid:
             num_missing_slot_value_error += 1
-            logging.info(f"Slot Error: didn't find match for '{value}' for slot '{slot}' in sentence '{sys_line_orig}'")
+    
+    def log_slot_match(is_valid, value, slot, sys_line):
+        if not is_valid:
+            logging.info(f"Slot Error: didn't find match for '{value}' for slot '{slot}' in sentence '{sys_line}'")
 
-        return sys_line, num_valid_slot_values, num_missing_slot_value_error
     
     surface_forms = {slot: {lemma: [form.split("\t")[1] for form in forms] for lemma, forms in values.items()} for slot, values in surface_forms.items()}
     num_cannot_check_slot_values = 0
@@ -245,13 +248,16 @@ def evaluate(surface_forms, das, sys):
                         # the sentence needs to contain the word kids
                         # but cannot contain negation before/after kids
                         is_valid = match_kids_slot and not match_kids_negation
-                        sys_line, num_valid_slot_values, num_missing_slot_value_error = validate_slot_match(is_valid, sys_line, sys_line_orig, False, value, slot, num_valid_slot_values, num_missing_slot_value_error)
+                        count_slot_match(is_valid)
+                        log_slot_match(is_valid, value, slot, sys_line_orig)
                     elif value == "no":
                         match_kids_negation = find_kids_negation(sys_line)
                         # the sentence needs to contain the word kids
                         # and must contain negation before/after kids
                         is_valid = match_kids_slot and match_kids_negation
-                        sys_line, num_valid_slot_values, num_missing_slot_value_error = validate_slot_match(is_valid, sys_line, sys_line_orig, match_kids_negation, value, slot, num_valid_slot_values, num_missing_slot_value_error)
+                        count_slot_match(is_valid)
+                        sys_line = remove_from_sentence(sys_line, match_kids_negation)
+                        log_slot_match(is_valid, value, slot, sys_line_orig)
                     elif value == "dont_care":
                         num_cannot_check_slot_values += 1
                         logging.debug(f"Coverage problem: We cannot handle kids_allowed='dont_care'")
@@ -282,11 +288,15 @@ def evaluate(surface_forms, das, sys):
                 # TODO: For count we might want to implement checking numerals (such as "dvě", "tři", ...)
                 for value in values:
                     match = exact_match(sys_line, value)
-                    sys_line, num_valid_slot_values, num_missing_slot_value_error = validate_slot_match(match, sys_line, sys_line_orig, match, value, slot, num_valid_slot_values, num_missing_slot_value_error)
+                    count_slot_match(match)
+                    sys_line = remove_from_sentence(sys_line, match)
+                    log_slot_match(match, value, slot, sys_line_orig)
             elif slot == "address":
                 for value in values:
                     match = match_address(value, sys_line, surface_forms["street"])
-                    sys_line, num_valid_slot_values, num_missing_slot_value_error = validate_slot_match(match, sys_line, sys_line_orig, match, value, slot, num_valid_slot_values, num_missing_slot_value_error)
+                    count_slot_match(match)
+                    sys_line = remove_from_sentence(sys_line, match)
+                    log_slot_match(match, value, slot, sys_line_orig)
             elif slot == "price":
                 for value in values:
                     if "between" in value:
@@ -304,12 +314,16 @@ def evaluate(surface_forms, das, sys):
                     else:
                         match = exact_match(sys_line, value)
                     
-                    sys_line, num_valid_slot_values, num_missing_slot_value_error = validate_slot_match(match, sys_line, sys_line_orig, match, value, slot, num_valid_slot_values, num_missing_slot_value_error)
+                    count_slot_match(match)
+                    sys_line = remove_from_sentence(sys_line, match)
+                    log_slot_match(match, value, slot, sys_line_orig)
             elif slot in surface_forms:
                 for value in values:
                     if value in surface_forms[slot]:
                         match = find_surface_form(sys_line, surface_forms[slot][value])
-                        sys_line, num_valid_slot_values, num_missing_slot_value_error = validate_slot_match(match, sys_line, sys_line_orig, match, value, slot, num_valid_slot_values, num_missing_slot_value_error)
+                        count_slot_match(match)
+                        sys_line = remove_from_sentence(sys_line, match)
+                        log_slot_match(match, value, slot, sys_line_orig)
                     else:
                         # TODO: handle dont_care
                         if value == "dont_care":
