@@ -188,12 +188,12 @@ def evaluate(surface_forms, das, sys):
         if not is_valid:
             num_missing_slot_value_error += 1
     
-    def log_slot_missing_error(is_valid, value, slot, sys_line):
+    def log_slot_missing_error(is_valid, value, slot, sys_line, index):
         if not is_valid:
-            logging.info(f"Slot Error: didn't find match for '{value}' for slot '{slot}' in sentence '{sys_line}'")
+            logging.info(f"Slot Error: didn't find match for '{value}' for slot '{slot}' in instance {index}: '{sys_line}'")
     
-    def log_additional_slot_error(substring, slot, sys_line, da_line):
-        logging.info(f"Slot Error: found substring '{substring}' implying slot '{slot}' in sentence '{sys_line}'. DA is '{da_line}'")
+    def log_additional_slot_error(substring, slot, sys_line, da_line, index):
+        logging.info(f"Slot Error: found substring '{substring}' implying slot '{slot}' in instance {index}: '{sys_line}'. DA is '{da_line}'")
 
 
     surface_forms = {slot: {lemma: [form.split("\t")[1] for form in forms] for lemma, forms in values.items()} for slot, values in surface_forms.items()}
@@ -205,7 +205,7 @@ def evaluate(surface_forms, das, sys):
     num_missing_slot_value_error = 0
     num_additional_slot_value_error = 0
 
-    for da_line, sys_line_orig in list(zip(das, sys)):
+    for index, (da_line, sys_line_orig) in enumerate(zip(das, sys)):
         sys_line = sys_line_orig
         da = parse_da(da_line)
         attributes = da["attributes"]
@@ -235,7 +235,6 @@ def evaluate(surface_forms, das, sys):
                 # We don't log the coverage problem here because we don't have to check this slot
                 continue
             elif slot == "kids_allowed":
-
                 match_kids_slot = surface_forms_match(sys_line, ["děti", "dětí", "dětem", "dětmi"])
 
                 # For two examples in the train set the value is missing but =yes is assumed
@@ -250,7 +249,7 @@ def evaluate(surface_forms, das, sys):
                         # but cannot contain negation before/after kids
                         is_valid = match_kids_slot and not match_kids_negation
                         count_slot_missing_error(is_valid)
-                        log_slot_missing_error(is_valid, value, slot, sys_line_orig)
+                        log_slot_missing_error(is_valid, value, slot, sys_line_orig, index)
                     elif value == "no":
                         match_kids_negation = find_kids_negation(sys_line)
                         # the sentence needs to contain the word kids
@@ -258,7 +257,7 @@ def evaluate(surface_forms, das, sys):
                         is_valid = match_kids_slot and match_kids_negation
                         count_slot_missing_error(is_valid)
                         sys_line = remove_from_sentence(sys_line, match_kids_negation)
-                        log_slot_missing_error(is_valid, value, slot, sys_line_orig)
+                        log_slot_missing_error(is_valid, value, slot, sys_line_orig, index)
                     elif value == "dont_care":
                         num_cannot_check_slot_values += 1
                         logging.debug(f"Coverage problem: We cannot handle kids_allowed='dont_care'")
@@ -291,13 +290,13 @@ def evaluate(surface_forms, das, sys):
                     match = exact_match(sys_line, value)
                     count_slot_missing_error(match)
                     sys_line = remove_from_sentence(sys_line, match)
-                    log_slot_missing_error(match, value, slot, sys_line_orig)
+                    log_slot_missing_error(match, value, slot, sys_line_orig, index)
             elif slot == "address":
                 for value in values:
                     match = address_match(value, sys_line, surface_forms["street"])
                     count_slot_missing_error(match)
                     sys_line = remove_from_sentence(sys_line, match)
-                    log_slot_missing_error(match, value, slot, sys_line_orig)
+                    log_slot_missing_error(match, value, slot, sys_line_orig, index)
             elif slot == "price":
                 for value in values:
                     if "between" in value:
@@ -317,14 +316,14 @@ def evaluate(surface_forms, das, sys):
                     
                     count_slot_missing_error(match)
                     sys_line = remove_from_sentence(sys_line, match)
-                    log_slot_missing_error(match, value, slot, sys_line_orig)
+                    log_slot_missing_error(match, value, slot, sys_line_orig, index)
             elif slot in surface_forms:
                 for value in values:
                     if value in surface_forms[slot]:
                         match = surface_forms_match(sys_line, surface_forms[slot][value])
                         count_slot_missing_error(match)
                         sys_line = remove_from_sentence(sys_line, match)
-                        log_slot_missing_error(match, value, slot, sys_line_orig)
+                        log_slot_missing_error(match, value, slot, sys_line_orig, index)
                     else:
                         # TODO: handle dont_care
                         if value == "dont_care":
@@ -352,14 +351,13 @@ def evaluate(surface_forms, das, sys):
             for forms in surface_forms[surface_forms_slot].values():
                 match = surface_forms_match(sys_line, forms)
                 if match:
-                    log_additional_slot_error(match, surface_forms_slot, sys_line_orig, da_line)
+                    log_additional_slot_error(match, surface_forms_slot, sys_line_orig, da_line, index)
                     num_additional_slot_value_error += 1
                     # print(sys_line, forms)
 
         # Find additional kids_allowed slot
         match_kids_slot = surface_forms_match(sys_line, ["děti", "dětí", "dětem", "dětmi"])
-        if match_kids_slot:
-            log_additional_slot_error(match_kids_slot, "kids_allowed", sys_line_orig, da_line)
+            log_additional_slot_error(match_kids_slot, "kids_allowed", sys_line_orig, da_line, index)
             num_additional_slot_value_error += 1
 
     logging.info(f"Total number of DAs: {len(das)}")
