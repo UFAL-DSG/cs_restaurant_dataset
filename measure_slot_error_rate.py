@@ -276,13 +276,6 @@ def evaluate(surface_forms, das, sys):
                         logging.debug(f"Coverage problem: We cannot handle kids_allowed='yes',kids_allowed='dont_care'")
                     else:
                         assert False, f"Invalid value {values} for kids_allowed"
-                
-                # Warning, this is maybe dangerous - but we remove all matched "děti" string
-                while match_kids_slot:
-                    sys_line = remove_from_sentence(sys_line, match_kids_slot)
-                    match_kids_slot = surface_forms_match(sys_line, ["děti", "dětí", "dětem", "dětmi"])
-                # This is because we don't want to trigger the "additional slot" error 
-                # for the slot values we cannot handle
 
             elif slot in ["phone", "count", "postcode"]:
                 # TODO: For count we might want to implement checking numerals (such as "dvě", "tři", ...)
@@ -357,6 +350,7 @@ def evaluate(surface_forms, das, sys):
 
         # Find additional kids_allowed slot
         match_kids_slot = surface_forms_match(sys_line, ["děti", "dětí", "dětem", "dětmi"])
+        if match_kids_slot and "kids_allowed" not in attributes:
             log_additional_slot_error(match_kids_slot, "kids_allowed", sys_line_orig, da_line, index)
             num_additional_slot_value_error += 1
 
