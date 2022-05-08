@@ -116,12 +116,33 @@ def test_parse_da():
 test_parse_da()
 
 def evaluate(surface_forms, das, sys):
-    def capitalize_first_letters(name_list):
-        return [name.title() for name in name_list]
+    def exact_match(sentence, value):
+        value = str(value)
+        if value in sentence:
+            return value
+        else:
+            return False
+    
+    def regex_match(sentence, regex, group=0):
+        matches = re.search(regex, sentence, re.IGNORECASE)
+        if matches:
+            return matches.group(group)
+        else:
+            return False
 
-    def find_surface_form(sentence, forms):
+    def address_match(street_value, sentence, forms):
+        street_name, street_num = street_value.rsplit(" ", 1)
+        if street_name in forms:
+            for test_name in forms[street_name]:
+                test_address = f"{test_name} {street_num}"
+                if test_address in sentence:
+                    return test_address
+        return False
+
+    def surface_forms_match(sentence, forms):
         # We look for some variations in capitalization
-        forms = set(forms + capitalize_first_letters(forms))
+        capitalized_first_letters = [form.title() for form in forms]
+        forms = set(forms + capitalized_first_letters)
         # We try to match the longest subsequences first
         forms = sorted(forms, key=len, reverse=True)
 
@@ -138,20 +159,6 @@ def evaluate(surface_forms, das, sys):
 
         return False
 
-    def exact_match(sentence, value):
-        value = str(value)
-        if value in sentence:
-            return value
-        else:
-            return False
-    
-    def regex_match(sentence, regex, group=0):
-        matches = re.search(regex, sentence, re.IGNORECASE)
-        if matches:
-            return matches.group(group)
-        else:
-            return False
-    
     def remove_from_sentence(sentence, value):
         if value:
             new_sentence = "".join(sentence.split(value))
@@ -161,15 +168,6 @@ def evaluate(surface_forms, das, sys):
             return new_sentence
         else:
             return sentence
-    
-    def match_address(street_value, sentence, forms):
-        street_name, street_num = street_value.rsplit(" ", 1)
-        if street_name in forms:
-            for test_name in forms[street_name]:
-                test_address = f"{test_name} {street_num}"
-                if test_address in sentence:
-                    return test_address
-        return False
     
     def find_kids_negation(sys_line):
         match = regex_match(sys_line, r"\b(ne\w*) (?:\w+ ){0,4}dět\w*", group=1)
@@ -184,17 +182,20 @@ def evaluate(surface_forms, das, sys):
             match = regex_match(sys_line, r"(bez) (?:\w+ ){0,3}dět\w*", group=1)
         return match
     
-    def count_slot_match(is_valid):
+    def count_slot_missing_error(is_valid):
         nonlocal num_valid_slot_values, num_missing_slot_value_error
         num_valid_slot_values += 1
         if not is_valid:
             num_missing_slot_value_error += 1
     
-    def log_slot_match(is_valid, value, slot, sys_line):
+    def log_slot_missing_error(is_valid, value, slot, sys_line):
         if not is_valid:
             logging.info(f"Slot Error: didn't find match for '{value}' for slot '{slot}' in sentence '{sys_line}'")
-
     
+    def log_additional_slot_error(substring, slot, sys_line, da_line):
+        logging.info(f"Slot Error: found substring '{substring}' implying slot '{slot}' in sentence '{sys_line}'. DA is '{da_line}'")
+
+
     surface_forms = {slot: {lemma: [form.split("\t")[1] for form in forms] for lemma, forms in values.items()} for slot, values in surface_forms.items()}
     num_cannot_check_slot_values = 0
     num_total_num_of_slot_values = 0
@@ -204,9 +205,9 @@ def evaluate(surface_forms, das, sys):
     num_missing_slot_value_error = 0
     num_additional_slot_value_error = 0
 
-    for da_string, sys_line_orig in list(zip(das, sys)):
+    for da_line, sys_line_orig in list(zip(das, sys)):
         sys_line = sys_line_orig
-        da = parse_da(da_string)
+        da = parse_da(da_line)
         attributes = da["attributes"]
 
         num_total_num_of_slot_values += sum(len(values) for _, values in attributes.items())
@@ -235,7 +236,7 @@ def evaluate(surface_forms, das, sys):
                 continue
             elif slot == "kids_allowed":
 
-                match_kids_slot = find_surface_form(sys_line, ["děti", "dětí", "dětem", "dětmi"])
+                match_kids_slot = surface_forms_match(sys_line, ["děti", "dětí", "dětem", "dětmi"])
 
                 # For two examples in the train set the value is missing but =yes is assumed
                 if len(values) == 0:
@@ -248,16 +249,16 @@ def evaluate(surface_forms, das, sys):
                         # the sentence needs to contain the word kids
                         # but cannot contain negation before/after kids
                         is_valid = match_kids_slot and not match_kids_negation
-                        count_slot_match(is_valid)
-                        log_slot_match(is_valid, value, slot, sys_line_orig)
+                        count_slot_missing_error(is_valid)
+                        log_slot_missing_error(is_valid, value, slot, sys_line_orig)
                     elif value == "no":
                         match_kids_negation = find_kids_negation(sys_line)
                         # the sentence needs to contain the word kids
                         # and must contain negation before/after kids
                         is_valid = match_kids_slot and match_kids_negation
-                        count_slot_match(is_valid)
+                        count_slot_missing_error(is_valid)
                         sys_line = remove_from_sentence(sys_line, match_kids_negation)
-                        log_slot_match(is_valid, value, slot, sys_line_orig)
+                        log_slot_missing_error(is_valid, value, slot, sys_line_orig)
                     elif value == "dont_care":
                         num_cannot_check_slot_values += 1
                         logging.debug(f"Coverage problem: We cannot handle kids_allowed='dont_care'")
@@ -280,7 +281,7 @@ def evaluate(surface_forms, das, sys):
                 # Warning, this is maybe dangerous - but we remove all matched "děti" string
                 while match_kids_slot:
                     sys_line = remove_from_sentence(sys_line, match_kids_slot)
-                    match_kids_slot = find_surface_form(sys_line, ["děti", "dětí", "dětem", "dětmi"])
+                    match_kids_slot = surface_forms_match(sys_line, ["děti", "dětí", "dětem", "dětmi"])
                 # This is because we don't want to trigger the "additional slot" error 
                 # for the slot values we cannot handle
 
@@ -288,15 +289,15 @@ def evaluate(surface_forms, das, sys):
                 # TODO: For count we might want to implement checking numerals (such as "dvě", "tři", ...)
                 for value in values:
                     match = exact_match(sys_line, value)
-                    count_slot_match(match)
+                    count_slot_missing_error(match)
                     sys_line = remove_from_sentence(sys_line, match)
-                    log_slot_match(match, value, slot, sys_line_orig)
+                    log_slot_missing_error(match, value, slot, sys_line_orig)
             elif slot == "address":
                 for value in values:
-                    match = match_address(value, sys_line, surface_forms["street"])
-                    count_slot_match(match)
+                    match = address_match(value, sys_line, surface_forms["street"])
+                    count_slot_missing_error(match)
                     sys_line = remove_from_sentence(sys_line, match)
-                    log_slot_match(match, value, slot, sys_line_orig)
+                    log_slot_missing_error(match, value, slot, sys_line_orig)
             elif slot == "price":
                 for value in values:
                     if "between" in value:
@@ -314,16 +315,16 @@ def evaluate(surface_forms, das, sys):
                     else:
                         match = exact_match(sys_line, value)
                     
-                    count_slot_match(match)
+                    count_slot_missing_error(match)
                     sys_line = remove_from_sentence(sys_line, match)
-                    log_slot_match(match, value, slot, sys_line_orig)
+                    log_slot_missing_error(match, value, slot, sys_line_orig)
             elif slot in surface_forms:
                 for value in values:
                     if value in surface_forms[slot]:
-                        match = find_surface_form(sys_line, surface_forms[slot][value])
-                        count_slot_match(match)
+                        match = surface_forms_match(sys_line, surface_forms[slot][value])
+                        count_slot_missing_error(match)
                         sys_line = remove_from_sentence(sys_line, match)
-                        log_slot_match(match, value, slot, sys_line_orig)
+                        log_slot_missing_error(match, value, slot, sys_line_orig)
                     else:
                         # TODO: handle dont_care
                         if value == "dont_care":
@@ -334,7 +335,7 @@ def evaluate(surface_forms, das, sys):
                             num_cannot_check_slot_values += 1
                             logging.debug(f"Coverage problem: We cannot handle value 'none' for slot {slot}")
             else:
-                logging.error(f"Invalid slot in the parsed attributes of DA '{da_string}': {slot}")
+                logging.error(f"Invalid slot in the parsed attributes of DA '{da_line}': {slot}")
                 pass
         
         
@@ -349,25 +350,25 @@ def evaluate(surface_forms, das, sys):
             if surface_forms_slot == "price_range":
                 continue
             for forms in surface_forms[surface_forms_slot].values():
-                match = find_surface_form(sys_line, forms)
+                match = surface_forms_match(sys_line, forms)
                 if match:
-                    logging.info(f"Slot Error: found additional value '{match}' for slot '{surface_forms_slot}' in sentence '{sys_line_orig}'. DA is '{da_string}'")
+                    log_additional_slot_error(match, surface_forms_slot, sys_line_orig, da_line)
                     num_additional_slot_value_error += 1
                     # print(sys_line, forms)
 
         # Find additional kids_allowed slot
-        match_kids_slot = find_surface_form(sys_line, ["děti", "dětí", "dětem", "dětmi"])
+        match_kids_slot = surface_forms_match(sys_line, ["děti", "dětí", "dětem", "dětmi"])
         if match_kids_slot:
-            logging.info(f"Slot Error: found substring '{match_kids_slot}' implying slot 'kids_allowed' in sentence '{sys_line_orig}'. DA is '{da_string}'")
+            log_additional_slot_error(match_kids_slot, "kids_allowed", sys_line_orig, da_line)
             num_additional_slot_value_error += 1
 
     logging.info(f"Total number of DAs: {len(das)}")
 
     diff_cannot_check = num_total_num_of_slot_values-num_valid_slot_values
-    assert num_cannot_check_slot_values == num_total_num_of_slot_values-num_valid_slot_values, "The number of slots we know we cannot check should equal the total number of slots and the number of slots that we correctly handled"
+    assert num_cannot_check_slot_values == diff_cannot_check, "The number of slots we know we cannot check should equal the total number of slots and the number of slots that we correctly handled"
 
     logging.info(f"Total number of slots: {num_total_num_of_slot_values}")
-    logging.info(f"Slots that we cannot check: {num_cannot_check_slot_values} (=={diff_cannot_check}), out of which {num_type_slots} are 'type=restaurant' slots")
+    logging.info(f"Slots that we cannot check: {num_cannot_check_slot_values}, out of which {num_type_slots} are 'type=restaurant' slots")
     errors = num_missing_slot_value_error+num_additional_slot_value_error
     print("Missing Slot Errors: ", num_missing_slot_value_error)
     print("Additional Slot Errors: ", num_additional_slot_value_error)
