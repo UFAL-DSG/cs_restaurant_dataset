@@ -169,15 +169,16 @@ def evaluate(surface_forms, das, sys):
         else:
             return sentence
     
-    def find_kids_negation(sys_line):
-        match = regex_match(sys_line, r"\b(ne\w*) (?:\w+ ){0,4}dět\w*", group=1)
+    def find_kids_negation(sys_line, negation_max_word_distance):
+        negation_max_word_distance = str(negation_max_word_distance)
+        match = regex_match(sys_line, r"\b(ne\w*) (?:\w+ ){0,"+negation_max_word_distance+r"}dět\w*", group=1)
         if not match:
             # (?!a ) is there because of "... a ..." conjunction
             match = regex_match(sys_line, r"dět\w* (?!a )(?:\w+ ){0,2}(ne\w+)", group=1)
         if not match:
-            match = regex_match(sys_line, r"(zakáz\w*|zákaz\w*) (?:\w+ ){0,5}dět\w*", group=1)
+            match = regex_match(sys_line, r"(zakáz\w*|zákaz\w*) (?:\w+ ){0,"+negation_max_word_distance+r"}dět\w*", group=1)
         if not match:
-            match = regex_match(sys_line, r"dět\w* (?:\w+ ){0,5}(zakáz\w*|zákaz\w*)", group=1)
+            match = regex_match(sys_line, r"dět\w* (?:\w+ ){0,"+negation_max_word_distance+r"}(zakáz\w*|zákaz\w*)", group=1)
         if not match:
             match = regex_match(sys_line, r"(bez) (?:\w+ ){0,3}dět\w*", group=1)
         return match
@@ -243,15 +244,20 @@ def evaluate(surface_forms, das, sys):
 
                 if len(values) == 1:
                     value = values[0]
+                    negation_max_word_distance = 5
+                    # inform_no_match will very probably contain a negation
+                    # therefore we need to check smaller neighbourhood around "děti"
+                    if da["type"] == "inform_no_match":
+                        negation_max_word_distance = 3
                     if value == "yes":
-                        match_kids_negation = find_kids_negation(sys_line)
+                        match_kids_negation = find_kids_negation(sys_line, negation_max_word_distance)
                         # the sentence needs to contain the word kids
                         # but cannot contain negation before/after kids
                         is_valid = match_kids_slot and not match_kids_negation
                         count_slot_missing_error(is_valid)
                         log_slot_missing_error(is_valid, value, slot, sys_line_orig, index)
                     elif value == "no":
-                        match_kids_negation = find_kids_negation(sys_line)
+                        match_kids_negation = find_kids_negation(sys_line, negation_max_word_distance)
                         # the sentence needs to contain the word kids
                         # and must contain negation before/after kids
                         is_valid = match_kids_slot and match_kids_negation
@@ -337,6 +343,10 @@ def evaluate(surface_forms, das, sys):
             # Do not check those slots that are inside the DA without any value
             # These often list some or all of the value keywords to raise a question to the user
             if surface_forms_slot in attributes and attributes[surface_forms_slot] == []:
+                continue
+            # Do not check the good_for_meal slot for DA goodbye().
+            # To avoid false additional error in sentences such as "Přeji dobrou chuť k večeři ."
+            if da["type"] == "goodbye" and surface_forms_slot == "good_for_meal":
                 continue
 
             if surface_forms_slot == "price_range":
