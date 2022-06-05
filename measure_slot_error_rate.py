@@ -419,18 +419,14 @@ class Evaluator:
 
         logging.info(f"Total number of slots: {num_total_num_of_slot_values}")
         logging.info(f"Slots that we cannot check: {self.num_cannot_check_slot_values}, out of which {num_type_slots} are 'type=restaurant' slots")
-        errors = self.num_missing_slot_value_error+self.num_additional_slot_value_error
-        print("Missing Slot Errors: ", self.num_missing_slot_value_error)
-        print("Additional Slot Errors: ", self.num_additional_slot_value_error)
-        print("Total Slot Errors: ", errors)
-        print("Number of slots checked: ", self.num_valid_slot_values)
-        if self.num_valid_slot_values:
-            SER = errors / self.num_valid_slot_values
+        slot_errors = self.num_missing_slot_value_error+self.num_additional_slot_value_error
+        if num_total_num_of_slot_values:
+            SER = slot_errors / num_total_num_of_slot_values
         else:
             logging.warning(f"Didn't find any valid slots")
             SER = 0
 
-        print("SER:", SER)
+        return SER, slot_errors, self.num_missing_slot_value_error, self.num_additional_slot_value_error
 
 def main():
     ap = ArgumentParser(description='Slot Error Rate evaluation for Czech restaurant information dataset')
@@ -454,7 +450,12 @@ def main():
     surface_forms, das, sys = load_data(args.surface_forms_file, args.ref_file, args.sys_file)
 
     ser = Evaluator(surface_forms)
-    ser.evaluate(das, sys)
+    ser_score, slot_errors, num_missing_slot_value_error, num_additional_slot_value_error = ser.evaluate(das, sys)
+
+    print("Missing Slot Errors: ", num_missing_slot_value_error)
+    print("Additional Slot Errors: ", num_additional_slot_value_error)
+    print("Total Slot Errors: ", slot_errors)
+    print("SER:", ser_score)
 
 if __name__ == '__main__':
     main()
