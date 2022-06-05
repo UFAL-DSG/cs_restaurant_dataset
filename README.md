@@ -99,7 +99,8 @@ The **act types used** in this dataset are:
 * `goodbye` -- goodbye
 
 **Slots used** in this dataset are:
-* `name` -- restaurant name* `count` -- number of restaurants matching criteria
+* `name` -- restaurant name
+* `count` -- number of restaurants matching criteria
 * `type` -- venue type (the only value used here is `restaurant`)
 * `price_range` -- restaurant price range (`cheap`, `moderate`, `expensive`)
 * `price` -- the actual meal price (or price range) in Czech Crowns (Kč)
@@ -111,6 +112,30 @@ The **act types used** in this dataset are:
 * `food` -- food type, i.e., cuisine (`Chinese`, `French`, etc.)
 * `good_for_meal` -- suitability for a particular meal (`breakfast`, `lunch`, `brunch`, `dinner`)
 * `kids_allowed` -- suitability for children
+
+Slot Error Rate evaluation
+--------------------------
+
+Additionally we provide an evaluation script for further research purposes. The script `measure_slot_error_rate.py` computes the Slot Error Rate defined as:
+
+  SER = (# missing slots + # additional slots) / # total number of slots
+
+This is done by comparing the slot values in each input dialogue acts with provided dialogue system output. Note that this script was created after publishing the corresponding paper and the scores **do not** correspond to those in the paper. Most significatly, the script is able to check the `kids_allowed` slot, which was not handled in the original paper.
+
+### Usage ###
+
+To evaluate your NLG system output `output.txt` on the test set run the following command:
+
+```
+python measure_slot_error_rate.py --sys_file output.txt surface_forms.json test.csv
+```
+
+See the list of found errors by increasing the verbosity of the script by adding the `-vv` argument.
+
+For detailed usage information run:
+```
+python measure_slot_error_rate.py -h
+```
 
 Acknowledgments
 ---------------
