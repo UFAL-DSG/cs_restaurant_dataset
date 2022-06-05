@@ -103,27 +103,6 @@ def parse_da(da):
         "attributes": parsed_attributes
     }
 
-def test_parse_da():
-    da = "inform(abc=123)"
-    parsed = parse_da(da)
-    
-    assert parsed == {
-        "type": "inform",
-        "attributes": {"abc" : ["123"]}
-    }
-    da = "inform()"
-    parsed = parse_da(da)
-    assert parsed == {
-        "type": "inform",
-        "attributes": {}
-    }
-    da = "?request(rr='Baráčnická Rychta',rr=dont_care,cc=382)"
-    parsed = parse_da(da)
-    assert parsed == {
-        "type": "?request",
-        "attributes": {"rr": ["Baráčnická Rychta", "dont_care"], "cc": ["382"]}
-    }
-
 class Evaluator:
     """Main class for running the Slot Error Rate evaluation"""
 
@@ -139,7 +118,11 @@ class Evaluator:
         # Remove the lemma and tags in the surface forms
         self.surface_forms = {slot: {lemma: [form.split("\t")[1] for form in forms] for lemma, forms in values.items()} for slot, values in surface_forms.items()}
         self.kids_surface_forms = ["děti", "dětí", "dětem", "dětmi"]
-        self.price_surface_forms = self.surface_forms["price"]["between _ and _ Kč"]
+        if "price" in self.surface_forms:
+            self.price_surface_forms = self.surface_forms["price"]["between _ and _ Kč"]
+        else:
+            self.price_surface_forms = []
+            logging.error(f"No `price` key in the surface forms file. Please check the surface forms file.")
 
     def exact_match(self, sentence, substring):
         """Search for substring in sentence, if there is match return it.
@@ -263,7 +246,7 @@ class Evaluator:
                 self.count_slot_missing_error(is_valid)
                 if is_valid:
                     sys_line = self.remove_from_sentence(sys_line, match_kids_slot)
-                sys_line = self.remove_from_sentence(sys_line, match_kids_negation)
+                    sys_line = self.remove_from_sentence(sys_line, match_kids_negation)
                 self.log_slot_missing_error(is_valid, value, slot, sys_line_orig, index)
             elif value == "dont_care":
                 self.num_cannot_check_slot_values += 1
