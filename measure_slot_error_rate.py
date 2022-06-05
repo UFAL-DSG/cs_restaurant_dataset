@@ -252,6 +252,8 @@ class Evaluator:
                 # but cannot contain negation before/after kids
                 is_valid = match_kids_slot and not match_kids_negation
                 self.count_slot_missing_error(is_valid)
+                if is_valid:
+                    sys_line = self.remove_from_sentence(sys_line, match_kids_slot)
                 self.log_slot_missing_error(is_valid, value, slot, sys_line_orig, index)
             elif value == "no":
                 match_kids_negation = self.find_kids_negation(sys_line, negation_max_word_distance)
@@ -259,6 +261,8 @@ class Evaluator:
                 # and must contain negation before/after kids
                 is_valid = match_kids_slot and match_kids_negation
                 self.count_slot_missing_error(is_valid)
+                if is_valid:
+                    sys_line = self.remove_from_sentence(sys_line, match_kids_slot)
                 sys_line = self.remove_from_sentence(sys_line, match_kids_negation)
                 self.log_slot_missing_error(is_valid, value, slot, sys_line_orig, index)
             elif value == "dont_care":
@@ -408,7 +412,7 @@ class Evaluator:
 
             # Find additional kids_allowed slot
             match_kids_slot = self.surface_forms_match(sys_line, self.kids_surface_forms)
-            if match_kids_slot and "kids_allowed" not in attributes:
+            if match_kids_slot and ("kids_allowed" not in attributes or attributes["kids_allowed"] in [["yes"], ["no"]]):
                 self.log_additional_slot_error(match_kids_slot, "kids_allowed", sys_line_orig, da_line, index)
                 self.num_additional_slot_value_error += 1
 
